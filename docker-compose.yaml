@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+
+    mongo:
+        image: mongo:latest
+        ports:
+            - 27017:27017
+        volumes:
+            - ~/git/docker/mongo/data:/data/db
+
+    it-web:
+        build: .
+        ports:
+            - 3000:3000
+        volumes:
+            - .:/it-web
+            - null-vol:/it-web/node_modules
+            - null-vol:/it-web/public/js/bower_components
+        command:
+            npm run dev
+        depends_on:
+            - mongo
+
+volumes:
+  null-vol:

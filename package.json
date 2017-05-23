@@ -1,0 +1,56 @@
+{
+  "name": "it-web",
+  "description": "Base ",
+  "version": "1.0.0",
+  "author": "Nigel Daniels",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nigel-daniels/it-web"
+  },
+  "private": true,
+  "scripts": {
+    "test": "mocha test/test.js",
+    "dev": "nodemon itServer",
+    "prebuild": "del-cli -f dist",
+    "build": "grunt",
+    "execute": "node dist/itServer.js",
+    "start": "node itServer.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "4.x",
+    "express-react-views": "^0.10.2",
+    "mongoose": "^4.9.4",
+    "morgan": "^1.8.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "request-json": "^0.6.1",
+    "serve-favicon": "2.4.x"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "chai-like": "^0.2.10",
+    "grunt": "^1.0.1",
+    "grunt-auto-install": "^0.3.1",
+    "grunt-babel": "^6.0.0",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-imagemin": "^1.0.1",
+    "grunt-contrib-requirejs": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-express-server": "^0.5.3",
+    "grunt-npm-install": "^0.3.1",
+    "main-bower-files": "^2.13.1",
+    "mocha": "^3.2.0",
+    "nodemon": "^1.11.0"
+  },
+  "engines": {
+    "node": "6.10.x",
+    "npm": "4.3.x"
+  }
+}

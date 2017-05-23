@@ -1,0 +1,14 @@
+.DS_Store
+.gitignore
+.git
+dist
+build
+jsxBuild
+log
+README.md
+node_modules
+public/js/bower_components
+.dockerignore
+Dockerfile
+docker-compose.yaml
+asterionSwagger.yaml
