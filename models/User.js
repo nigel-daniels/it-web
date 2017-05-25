@@ -6,21 +6,21 @@ module.exports = function(mongoose, bcrypt, nodemailer, nodemailerSmtp, config) 
 	var SALT_ROUNDS = 10;
 
 	var Role = 	{
-				USER:	'User',
-             	ADMIN:	'Administrator'
+				USER:	0,
+             	ADMIN:	1,
              	};
 
 	// Create the Mongoose Schema
 	var UserSchema = new mongoose.Schema({
             name: 		{
-                        first:	{type: String},
-                        last:	{type: String}
+                        first:	{type: String, required: true},
+                        last:	{type: String, required: true}
                         },
             username:   {type: String, unique: true, required: true},
             password:	{type: String, required: true},
 			email:		{type: String, unique: true},
             organisation:	{type: mongoose.Schema.ObjectId},
-			role:			  {type: Number, default: Role.USER}
+			role:		{type: Number, default: Role.USER, required: true}
 			});
 
 	// checking if password is valid method
@@ -38,8 +38,19 @@ module.exports = function(mongoose, bcrypt, nodemailer, nodemailerSmtp, config) 
     						return bcrypt.hashSync(password, bcrypt.genSaltSync(SALT_ROUNDS), null);
     						};
 
+	var validateRole =	function(value) {
+							switch (value) {
+								case Role.User:
+									return true;
+								case Role.ADMIN:
+									return true;
+								default:
+									return false;
+								}
+							};
+
 	// Create method
-	var create = 		function(newUser, callback) {
+	var createUser = 		function(newUser, callback) {
 							log.info('User.create, called');
 
                     		var user = new User({
@@ -56,45 +67,6 @@ module.exports = function(mongoose, bcrypt, nodemailer, nodemailerSmtp, config) 
 
                     		user.save(callback);
                           	};
-
-	var findUserTotal = function(callback) {
-							User.count({}, callback);
-							};
-
-	// Find single instance using the generated id
-	var findById = 		function(searchId, callback) {
-							log.info('User.findById, looking for ' + searchId);
-							User.findOne({_id: searchId}, callback);
-							};
-
-	// Find single instance method using the username
-	var findByUsername = function(searchUsername, callback) {
-							log.info('User.findByUsername, looking for ' + searchUsername);
-							User.findOne({username: searchUsername}, callback);
-							};
-
-	// Find single instance method using the email key
-	var findByEmail = 	function(searchEmail, callback) {
-							log.info('User.findByEmail, looking for ' + searchEmail);
-							User.findOne({email: searchEmail}, callback);
-							};
-
-	var update =		function(updateUser, callback) {
-							log.info('User.update, udate user.id ' + updateUser.id);
-							User.update({_id: updateUser._id},
-								{
-								name:	{
-										first:	updateUser.first,
-										last:	updateUser.last
-										},
-                            	username:   	updateUser.username,
-                            	email: 			updateUser.email,
-								password: 		generateHash(updateUser.password),
-                            	organisation:	updateUser.organisation,
-								role:			updateUser.role
-								},
-								callback);
-							};
 
 	var updatePassword = function(id, newPassword, callback) {
 							log.info('User.changePassword, called');
@@ -143,29 +115,17 @@ module.exports = function(mongoose, bcrypt, nodemailer, nodemailerSmtp, config) 
 							});
 						};
 
-	var deleteById = function(id, callback) {
-						log.info('User.delete, called for id: ' + id);
-						User.deleteOne({_id: id}, callback);
-						};
 
 
 	return 	{
-			Role:					Role,
+			User: 			User,
+			Role:			Role,
 
-			create:					create,
+			validateRole:	validateRole,
 
-			findById:				findById,
-			findByEmail:			findByEmail,
-			findByUsername:			findByUsername,
-			findUserTotal:			findUserTotal,
+			createUser:		createUser,
 
-			update:					update,
-			updatePassword:			updatePassword,
-
-			forgotPassword:			forgotPassword,
-
-			deleteById:				deleteById,
-
-			User: 					User
+			updatePassword:	updatePassword,
+			forgotPassword:	forgotPassword
 			};
 	};

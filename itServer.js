@@ -13,9 +13,9 @@ var favicon 		= require('serve-favicon');
 var logger			= require('morgan');
 var mongoose 		= require('mongoose');
 // login dependanices
-//var passport 		= require('passport');
-//var passportLocal	= require('passport-local').Strategy;
-//var bcrypt			= require('bcrypt-nodejs');
+var passport 		= require('passport');
+var passportHttp	= require('passport-http').Strategy;
+var bcrypt			= require('bcrypt-nodejs');
 
 // Set the environment setting we are using
 var env = process.env.NODE_ENV === 'undefined' ? 'development' : process.env.NODE_ENV;
@@ -75,7 +75,7 @@ app.use(bodyParser.json({			// Stop over stuffing of JSON
 
 //Load the app specific data models
 var models = {
-	// User: require(__dirname + '/models/User')(mongoose, bcrypt, nodemailer, nodemailerSmtp, config),
+	// User: require(__dirname + '/models/User')(mongoose, bcrypt, nodemailer, config),
 	//Asset: 						require(__dirname + '/models/Asset')(client, mongoose),
 	//KeywordGroups:				require(__dirname + '/models/KeywordGroups')(oracledb, config),
 	//GroupKeywordsInAGroup:		require(__dirname + '/models/GroupKeywordsInAGroup')(oracledb, config),

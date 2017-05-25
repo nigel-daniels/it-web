@@ -3,8 +3,13 @@
  * Author: Nigel Daniels
  */
 module.exports = function(app, handlers) {
-	app.get('/users/', handlers.userHandler.getUsersCount);
-	app.get('/user/:id', handlers.userHandler.getUser);
-	app.get('/assets/dir*', handlers.userHandler.getFileAssets);
-	app.get('/assets/all*', handlers.userHandler.getAllFileAssets);
+	var isAuthenticated = 	function (req, res, next) {
+								if (req.isAuthenticated()) {return next();}
+								res.redirect('/');
+								};
+
+	app.get('/user/:id', isAuthenticated, handlers.userHandler.getUser);
+	//app.post('/user/', , handlers.userHandler.postUser); Happens during authentication process
+	app.put('/user/:id', isAuthenticated, handlers.userHandler.putUser);
+	app.delete('/user/:id', isAuthenticated, handlers.userHandler.deleteUser);
 	};
