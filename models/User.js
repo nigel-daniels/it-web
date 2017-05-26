@@ -2,7 +2,7 @@
  * Copyright 2017 Initiate Thinking
  * Author: Nigel Daniels
  */
-module.exports = function(mongoose, bcrypt, nodemailer, nodemailerSmtp, config) {
+module.exports = function(mongoose, bcrypt, nodemailer, config) {
 	var SALT_ROUNDS = 10;
 
 	var Role = 	{
@@ -49,9 +49,8 @@ module.exports = function(mongoose, bcrypt, nodemailer, nodemailerSmtp, config) 
 								}
 							};
 
-	// Create method
+	// Create method that hashes pwd
 	var createUser = 		function(newUser, callback) {
-							log.info('User.create, called');
 
                     		var user = new User({
                     			name: 		{
@@ -70,16 +69,7 @@ module.exports = function(mongoose, bcrypt, nodemailer, nodemailerSmtp, config) 
 
 	var updatePassword = function(id, newPassword, callback) {
 							log.info('User.changePassword, called');
-							User.update({_id: id}, {password: generateHash(newPassword)},
-									function(err) {
-										if (err) {
-											log.error('User.changePassword, Error changing password for ' + id);
-											callback(err, 'There was an error while updating the password.\nThe error reported was \'' + err.message + '\''); // NLS
-										} else {
-											log.info('User.changePassword, Changed password for account ' + id);
-											callback(null);
-											}
-								});
+							User.update({_id: id}, {password: generateHash(newPassword)}, callback});
 							};
 
 	// Handle active users forgetting their password

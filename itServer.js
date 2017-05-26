@@ -15,7 +15,7 @@ var logger			= require('morgan');
 var mongoose 		= require('mongoose');
 // login dependanices
 var passport 		= require('passport');
-var DigestStrategy = require('passport-http').DigestStrategy;
+var passportLocal = require('passport-local').Strategy;
 var bcrypt			= require('bcrypt-nodejs');
 
 // Set the environment setting we are using
@@ -24,7 +24,8 @@ var env = process.env.NODE_ENV === 'undefined' ? 'development' : process.env.NOD
 // Load configuration files
 var config = {
 	app:	require(__dirname + '/config/app'),
-	db:		require(__dirname + '/config/db')
+	db:		require(__dirname + '/config/db'),
+	mail:	require(__dirname + '/config/mail')
 	};
 
 // Set the application and the variables it uses
@@ -33,7 +34,15 @@ var port 			= config.app.devPort;	// The default port for the app
 var shutdown		= false;				// Flag to see if we are shutting down
 var startup			= true;
 
-// configure the stuff for passport auth
+// Intercept any connections while we are starting up
+app.use(function (req, res, next) {
+	if (!startup) return next();
+
+	res.setHeader('Connection', 'close');
+	res.status(503).send('Service is in the process of starting.');
+	});
+
+// configure the session use
 app.use(session({
 	secret:				config.app.sessionKey,
 	resave:				true,		// TODO Does the passport store implement touch? if not and there is a short expire set to true
@@ -86,7 +95,7 @@ app.use(bodyParser.json({			// Stop over stuffing of JSON
 
 //Load the app specific data models
 var models = {
-	// User: require(__dirname + '/models/User')(mongoose, bcrypt, nodemailer, config),
+	User: 			require(__dirname + '/models/User')(mongoose, bcrypt, nodemailer, config),
 	//Asset: 						require(__dirname + '/models/Asset')(client, mongoose),
 	//KeywordGroups:				require(__dirname + '/models/KeywordGroups')(oracledb, config),
 	//GroupKeywordsInAGroup:		require(__dirname + '/models/GroupKeywordsInAGroup')(oracledb, config),
@@ -94,14 +103,26 @@ var models = {
 
 // Load the app specific business logic
 var handlers = {
-	//assetHandler:					require(__dirname + '/handlers/assetHandler')(models.Asset),
+	userHandler:	require(__dirname + '/handlers/userHandler')(models.User),
 	//keywordGroupsHandler: 			require(__dirname + '/handlers/keywordGroupsHandler')(models.KeywordGroups),
 	//groupKeywordsInAGroupHandler: 	require(__dirname + '/handlers/groupKeywordsInAGroupHandler')(models.GroupKeywordsInAGroup, models.Keywords, models.SuggestedKeywordValues)
 	};
 
+// Now load the passport config (it needs the user data model
+config.passport = require(__dirname + '/config/passport')(passport, passportLocal, models);
+
+// configure the stuff for passport auth
+app.use(session({
+	secret:				config.app.sessionKey,
+	resave:				false,		// TODO Does the passport store implement touch? if not and there is a short expire set to true
+	saveUninitialized:	false		// Set to false to comply with cookie laws
+	}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Load the routes we are going to use
-//require(__dirname + '/routes/assets')(app, handlers);
-//require(__dirname + '/routes/keywords')(app, handlers);
+require(__dirname + '/routes/authentication')(app, handlers);
+require(__dirname + '/routes/user')(app, handlers);
 
 app.set('view engine', 'jsx');
 app.engine('jsx', require('express-react-views').createEngine());
@@ -118,7 +139,7 @@ app.use(function (req, res, next) {
 	if (!shutdown) return next();
 
 	res.setHeader('Connection', 'close');
-	res.status(503).send('Server is in the process of closing');
+	res.status(503).send('Service is in the process of closing.');
 	});
 
 // Log all of the requests
@@ -138,6 +159,7 @@ app.get('/', function(req, res) {
 
 // Finally start the server
 var server = app.listen(port, function(){
+	startup = false;
 	console.log('IT Demo App, listening on port ' + port);
 	});
 
