@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Axiomode Ltd.
+ * Copyright 2017 Initiate Thinking
  * Author: Nigel Daniels
  */
 // Copy in your particulars and rename this to mail.js
