@@ -5,6 +5,7 @@
 
 // express and middleware dependencies.
 var express 		= require('express');
+var e
 var jsxEngine		= require('express-react-views').createEngine();
 var path 			= require('path');
 var request			= require('request-json');
@@ -14,7 +15,7 @@ var logger			= require('morgan');
 var mongoose 		= require('mongoose');
 // login dependanices
 var passport 		= require('passport');
-var passportHttp	= require('passport-http').Strategy;
+var DigestStrategy = require('passport-http').DigestStrategy;
 var bcrypt			= require('bcrypt-nodejs');
 
 // Set the environment setting we are using
@@ -30,6 +31,16 @@ var config = {
 var app 			= express();			// This app
 var port 			= config.app.devPort;	// The default port for the app
 var shutdown		= false;				// Flag to see if we are shutting down
+var startup			= true;
+
+// configure the stuff for passport auth
+app.use(session({
+	secret:				config.app.sessionKey,
+	resave:				true,		// TODO Does the passport store implement touch? if not and there is a short expire set to true
+	saveUninitialized:	false		// Set to false to comply with cookie laws
+	}));
+app.use(passport.initialize());
+//app.use(passport.session());
 
 
 // Set the environment specific variables

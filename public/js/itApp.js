@@ -17,6 +17,7 @@ require.config({
         babel:              'bower_components/requirejs-react-jsx/babel-5.8.34.min',
         jsx:                'bower_components/requirejs-react-jsx/jsx',
         text:               'bower_components/requirejs-text/text',
+        bcrypt:             'bower_components/bcrypt/bcrypt',
 
         app:                'app',
         media:              '../media',
@@ -54,7 +55,7 @@ require.config({
                         },
         itInit:         {
                         deps: 	['bootstrap', 'ie10workaround', 'backbone',
-                                'react', 'reactDom', 'jsx']
+                                'react', 'reactDom', 'jsx', 'bcrypt']
                         }
         },
 
