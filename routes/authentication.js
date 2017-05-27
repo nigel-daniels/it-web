@@ -14,11 +14,5 @@ module.exports = function(app, handlers, passport) {
 	app.post('/forgotpassword', handlers.authenticationHandler.forgotPassword);
 	app.post('/changepassword',  handlers.authenticationHandler.changePassword);
 
-	app.get('/logout', handlers.authenticationHandler.logout); function(req, res) {
-		log.info('GET /logout, called');
-		req.session.destroy();
-		req.logout();
-		res.redirect('/#login');
-		});
-	
+	app.get('/logout', handlers.authenticationHandler.logout);
 	};

@@ -17,7 +17,7 @@
     "start": "node itServer.js"
   },
   "dependencies": {
-    "bcrypt": "^1.0.2",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.1",
     "express": "4.x",
     "express-react-views": "^0.10.2",

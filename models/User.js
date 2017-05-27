@@ -57,7 +57,7 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 
 	var updatePassword = function(id, newPassword, callback) {
 							log.info('User.changePassword, called');
-							User.update({_id: id}, {password: config.passport.generateHash(newPassword)}, callback});
+							User.update({_id: id}, {password: config.passport.generateHash(newPassword)}, callback);
 							};
 
 	// Handle active users forgetting their password

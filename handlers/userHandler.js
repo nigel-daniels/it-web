@@ -26,16 +26,16 @@ module.exports = function(User) {
                 if (user) {
 					// Validate required input values
 					if ((req.body.name.first === 'undefined') || (req.body.name.last === 'undefined')) {
-						res.status(400).send('A first and last name are required.';) // NLS
+						res.status(400).send('A first and last name are required.'); // NLS
 						return;
 					} else if (req.body.username === 'undefined') {
-						res.status(400).send('A user name is required.';) // NLS
+						res.status(400).send('A user name is required.'); // NLS
 						return;
 					} else if (req.body.email === 'undefined') {
-						res.status(400).send('An e-mail address is required.';) // NLS
+						res.status(400).send('An e-mail address is required.'); // NLS
 						return;
 					} else if (req.body.role === 'undefined') {
-						res.status(400).send('A user role is required.';) // NLS
+						res.status(400).send('A user role is required.'); // NLS
 						return;
 						}
 
@@ -113,9 +113,9 @@ module.exports = function(User) {
 						} else {
 							res.sendStatus(200);
 							return;
-							});
+                            }
+                        });
                 } else {
-                    //console.log('GET /assets/' + req.params[0] + ' not found');
                     res.status(404).send('The user requested was not found.');
                     }
                 }
@@ -124,7 +124,6 @@ module.exports = function(User) {
 
 	return 	{
             getUser:	getUser,
-            //postUser:	postUser,
             putUser:	putUser,
             deleteUser:	deleteUser
             };

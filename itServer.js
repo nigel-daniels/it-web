@@ -5,18 +5,22 @@
 
 // express and middleware dependencies.
 var express 		= require('express');
-var e
 var jsxEngine		= require('express-react-views').createEngine();
 var path 			= require('path');
+
+var session			= require('express-session');
 var request			= require('request-json');
 var bodyParser 		= require('body-parser');
 var favicon 		= require('serve-favicon');
+// Persistence dependanices
 var logger			= require('morgan');
 var mongoose 		= require('mongoose');
 // login dependanices
 var passport 		= require('passport');
-var passportLocal = require('passport-local').Strategy;
+var passportLocal 	= require('passport-local').Strategy;
 var bcrypt			= require('bcrypt-nodejs');
+// Email dependancies
+var nodemailer		= require('nodemailer');
 
 // Set the environment setting we are using
 var env = process.env.NODE_ENV === 'undefined' ? 'development' : process.env.NODE_ENV;
@@ -94,6 +98,7 @@ var models = {
 // Load the app specific business logic
 var handlers = {
 	userHandler:	require(__dirname + '/handlers/userHandler')(models.User),
+	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')()
 	//keywordGroupsHandler: 			require(__dirname + '/handlers/keywordGroupsHandler')(models.KeywordGroups),
 	//groupKeywordsInAGroupHandler: 	require(__dirname + '/handlers/groupKeywordsInAGroupHandler')(models.GroupKeywordsInAGroup, models.Keywords, models.SuggestedKeywordValues)
 	};
@@ -111,8 +116,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Load the routes we are going to use
-require(__dirname + '/routes/authentication')(app, handlers);
-require(__dirname + '/routes/user')(app, handlers);
+require(__dirname + '/routes/authentication')(app, handlers, passport);
+require(__dirname + '/routes/users')(app, handlers);
 
 app.set('view engine', 'jsx');
 app.engine('jsx', require('express-react-views').createEngine());
