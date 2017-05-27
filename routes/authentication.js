@@ -8,8 +8,17 @@ module.exports = function(app, handlers, passport) {
 								res.redirect('/');
 								};
 
-	app.get('/user/:id', isAuthenticated, handlers.userHandler.getUser);
-	//app.post('/user/', , handlers.userHandler.postUser); Happens during authentication process
-	app.put('/user/:id', isAuthenticated, handlers.userHandler.putUser);
-	app.delete('/user/:id', isAuthenticated, handlers.userHandler.deleteUser);
+	app.post('/login', passport.authenticate('localLogin', {successRedirect: '/#index', failureRedirects: '/#login'}));
+	app.post('/signup', passport.authenticate('signup', {successRedirect: '/#index', failureRedirect: '#'}));
+
+	app.post('/forgotpassword', handlers.authenticationHandler.forgotPassword);
+	app.post('/changepassword',  handlers.authenticationHandler.changePassword);
+
+	app.get('/logout', handlers.authenticationHandler.logout); function(req, res) {
+		log.info('GET /logout, called');
+		req.session.destroy();
+		req.logout();
+		res.redirect('/#login');
+		});
+	
 	};

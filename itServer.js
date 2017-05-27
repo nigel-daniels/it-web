@@ -42,16 +42,6 @@ app.use(function (req, res, next) {
 	res.status(503).send('Service is in the process of starting.');
 	});
 
-// configure the session use
-app.use(session({
-	secret:				config.app.sessionKey,
-	resave:				true,		// TODO Does the passport store implement touch? if not and there is a short expire set to true
-	saveUninitialized:	false		// Set to false to comply with cookie laws
-	}));
-app.use(passport.initialize());
-//app.use(passport.session());
-
-
 // Set the environment specific variables
 if(env === 'production') {
 	// If we are running in production mode then use the log directory
@@ -68,8 +58,8 @@ if(env === 'production') {
 
 	// Set the prot to the dev port
 	port = config.app.port;
+	}
 
-}
 // MONGO DB Setup
 // connect to the db
 var dbURI = !process.env.MONGO_URL?config.db.mongourl:process.env.MONGO_URL;
@@ -109,7 +99,7 @@ var handlers = {
 	};
 
 // Now load the passport config (it needs the user data model
-config.passport = require(__dirname + '/config/passport')(passport, passportLocal, models);
+config.passport = require(__dirname + '/config/passport')(passport, passportLocal, bcrypt, models.User);
 
 // configure the stuff for passport auth
 app.use(session({

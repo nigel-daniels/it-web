@@ -2,7 +2,8 @@
  * Copyright 2017 Initiate Thinking
  * Author: Nigel Daniels
  */
-module.exports = function(passport, passportLocal, models) {
+module.exports = function(passport, passportLocal, bcrypt, User) {
+	var SALT_ROUNDS = 10;
 
 	/* ***************************************
 	 *  Passport login sessions
@@ -10,14 +11,12 @@ module.exports = function(passport, passportLocal, models) {
 
 	// used to serialize the user for the session
 	passport.serializeUser(function(user, done) {
-		log.debug('passport.serializeUser, called');
 		done(null, user.id);
 		});
 
 	// used to deserialize the user
 	passport.deserializeUser(function(id, done) {
-		models.User.findById(id, function(err, user) {
-			log.debug('passport.deserializeUser, called');
+		User.findById(id, function(err, user) {
 			done(err, user);
 			});
 		});
@@ -27,153 +26,110 @@ module.exports = function(passport, passportLocal, models) {
 	 *  LOCAL SIGNUP Strategy
 	 *************************************** */
 	passport.use('localSignup', new passportLocal(
-		{
-		// override username to be email
-		usernameField : 'email',
-		passwordField : 'password',
-		passReqToCallback:	true		// We need the extra user data for the org and user.
-		},
+		{passReqToCallback:	true},
 
-		function(req, email, password, done) {
-			log.debug('passport.signup, called.');
-			log.debug('passport.signup, req: ' + req + ', email: ' + email + ', done: ' + JSON.stringify(done));
+		function(req, username, password, done) {
 
-			// check to see if an organisation is specified
-			if (typeof req.body.organisation !== 'undefined')
-				{
-				log.info('passport.signup, organisation provided: ' + req.body.organisation);
-				// First Check the organisation does not already exist
-				models.Organisation.findByName(req.body.organisation, function(err, org) {
+			// Check we do have a user name and password
+			if (username === 'undefined') {
+				return done(new Error('The user name is required.'));
+			} else if (password === 'undefined') {
+				return done(new Error('The user name is required.'));
+				}
 
-					// If there is an error return it
-					if (err) {
-						log.error('passport.signup, error finding org, err: ' + JSON.stringify(err));
-						return done(err);
+			// Check the user does not already exist
+			User.findOne({username: username}, function(err, user) {
+				if (err) {return done(err);}
+
+				if (user) {
+					return done(new Error('The user name ' + username + + ' is in use.'));
+				} else {
+					// Ok now let's validate the required fields are here
+					if ((req.body.name.first === 'undefined') || (req.body.name.last === 'undefined')) {
+						return done(new Error('A first and last name are required.'));
+					} else if (req.body.email === 'undefined') {
+						return done(new Error('An e-mail address is required.'));
+					} else if (req.body.role === 'undefined') {
+						return done(new Error('A user role is required.'));
 						}
 
-					// We got an org so return an error
-					if (org) {
-						log.info('passport.signup, fail organisation exists: ' + org.name);
-						return done(null, false, {message: 'The organisation you want to create already exists, contact an administrator to join.'});  // NLS
-					} else {
-						// Create the organisation
-						new models.Organisation.create(req.body.organisation, function(err, newOrg) {
+					// Now check the email is unique
+					User.findOne({email: req.body.email}, function(err, user) {
+						if (err) {return done(err);}
+						if (user) {
+							return done(new Error('An account exists with this email address.'));
+							}
+						});
 
-							// If there is an error return it
-							if (err) {
-								log.error('passport.signup, error creating org, err: ' + JSON.stringify(err));
-								return done(err);
-								}
+					// Let's set the user account as a regular user... Unless it is account 1
+					var role = User.Role.USER;
+					if (User.count({}, function(err, count){
+						if (err) {return done(err);}
+						if (count === 0) {role = User.Role.ADMIN;}
+						}));
 
-							log.info('passport.signup, org created id: ' + newOrg.id);
+					// Ok Validation passed let's create the user
+					var user = new User({
+									name: 			{
+													first: req.body.name.first,
+													last: req.body.name.last
+													},
+									username:		username,
+									password:		generateHash(password),
+									email:			req.body.email,
+									organisation: 	req.body.organisation,
+									role:			role
+									});
 
-							// Check user does not exist
-							models.User.findByEmail(email, function(err, user) {
-
-								// If there is an error return it
-								if (err) {
-									log.error('passport.signup, error finding user, err: ' + JSON.stringify(err));
-									return done(err);
-									}
-
-								// If we got a user return an err
-								if (user) {
-									log.info('passport.signup, fail user exists: ' + user._id);
-									return done(null, false, {message: 'This email is already in use, try recovering your password.'});  // NLS
-								} else {
-									// All is OK let's create the user
-									new models.User.create(email, password, req.body.first, req.body.last, newOrg.id, req.body.role, function(err, newUser) {
-										// If there is an error return it
-										if (err) {
-											log.error('passport.signup, error creating user, err: ' + JSON.stringify(err));
-											return done(err);
-											}
-
-										log.info('passport.signup, success');
-										return done(null, newUser);
-										});
-									}
-								});
+					// Ok let's persist the user
+					user.save(function(err) {
+						if (err) {
+							return done(err);
+						} else {
+							return(null, user);
+							}
 						});
 					}
 				});
-			} else {
-				log.info('passport.signup, orgId: ' + req.body.orgId);
-
-				// Check user does not exist
-				models.User.findByEmail(email, function(err, user) {
-
-					// If there is an error return it
-					if (err) {
-						log.error('passport.signup, error finding user, err: ' + JSON.stringify(err));
-						return done(err);
-						}
-
-					// If we got a user return an err
-					if (user) {
-						log.info('passport.signup, fail user exists: ' + user._id);
-						return done(null, false, {message: 'This email is already in use, try recovering your password.'});  // NLS
-					} else {
-						// All is OK let's create the user
-						new models.User.create(email, password, req.body.first, req.body.last, req.body.orgId, req.body.role, function(err, newUser) {
-							// If there is an error return it
-							if (err) {
-								log.error('passport.signup, error creating user, err: ' + JSON.stringify(err));
-								return done(err);
-								}
-
-							log.info('passport.signup, success');
-							return done(null, newUser);
-							});
-						}
-					});
-				}
-			})
-		);
+			}
+		));
 
 
 	/* ***************************************
 	 *  LOCAL LOGIN Strategy
 	 *************************************** */
     passport.use('localLogin', new passportLocal(
-    	{
-    	// override username to be email
-        usernameField : 'email',
-        passwordField : 'password'
-    	},
+    	{passReqToCallback : true},
 
-    	function(email, password, done) { // callback with email and password from our form
+    	function(req, username, password, done) {
     		log.debug('passport.login, called.');
-    		// Check the user exists!
-    		models.User.findByEmail(email, function(err, user) {
-    			// If there is an error return it
-    			if (err) {
-    				log.error('passport.login, err: ' + JSON.stringify(err));
-    				return done(err);
-    				}
+    		User.findOne({username: username}, function(err, user) {
+				if (err) {return done(err);}
 
-	            // Ooops no user!
-	            if (!user) {
-	            	log.info('passport.login, user not found');
-	            	return done(null, false, {message: 'Email could not be found or the password incorrect.'});
-	            	}
+				if (user) {
+					if (validatePassword(password)) {
+						return done(null, user);
+					} else {
+						return done(new Error('Password provided was incorrect.'), false);
+						}
+				} else {
+					return done(new Error('User for the user name ' + username + + ' was not found.'), false);
+					}
+				});
+			}
+    	));
 
-	            // Check the user is active and the password is ok
-	            if (user.active) {
-		            if (!user.validPassword(password)) {
-		            	log.info('passport.login, password incorrect');
-		            	return done(null, false, {message: 'Email could not be found or the password incorrect.'});
-		            	}
-	            } else {
-	            	return done(null, false, {message: 'This account has been deactivated.'});
-	            	}
-	            // The last two return the same message as we don't want help trangressors
+	// Hash and salt the password
+	var generateHash = 		function(password) {
+								return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+								};
 
-	            // all is well, return successful user
-	            log.info('passport.login, success');
-	            return done(null, user);
-    		});
+	var	validatePassword = 	function(password, callback) {
+								return bcrypt.compareSync(password, this.password);
+								};
 
-    	})
-    );
-};
+	return {
+		generateHash:		generateHash,
+		validatePassword:	validatePassword
+		}
+	};

@@ -25,16 +25,16 @@ module.exports = function(User) {
             } else {
                 if (user) {
 					// Validate required input values
-					if ((req.body.name.first !== 'undefined') && (req.body.name.last !== 'undefined')) {
+					if ((req.body.name.first === 'undefined') || (req.body.name.last === 'undefined')) {
 						res.status(400).send('A first and last name are required.';) // NLS
 						return;
-					} else if (req.body.username !== 'undefined') {
+					} else if (req.body.username === 'undefined') {
 						res.status(400).send('A user name is required.';) // NLS
 						return;
-					} else if (req.body.email !== 'undefined') {
+					} else if (req.body.email === 'undefined') {
 						res.status(400).send('An e-mail address is required.';) // NLS
 						return;
-					} else if (req.body.role !== 'undefined') {
+					} else if (req.body.role === 'undefined') {
 						res.status(400).send('A user role is required.';) // NLS
 						return;
 						}
@@ -69,7 +69,7 @@ module.exports = function(User) {
 						}
 
 					// Check the role is valid
-					if (User.Role.indexOf(req.body.role) === -1) {
+					if (!User.validateRole(req.body.role)) {
 						res.status(400).send('The user role provided is invalid.'); // NLS
 						return;
 						}

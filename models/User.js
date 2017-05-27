@@ -3,7 +3,7 @@
  * Author: Nigel Daniels
  */
 module.exports = function(mongoose, bcrypt, nodemailer, config) {
-	var SALT_ROUNDS = 10;
+
 
 	var Role = 	{
 				USER:	0,
@@ -23,20 +23,8 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 			role:		{type: Number, default: Role.USER, required: true}
 			});
 
-	// checking if password is valid method
-	UserSchema.methods.validPassword = 	function(password, callback) {
-											log.debug('user.validPassword, called');
-											return bcrypt.compareSync(password, this.password);
-											};
-
 	// Set up the model
 	var User = mongoose.model('User', UserSchema);
-
-	// Hash and salt the password
-	var generateHash = 	function(password) {
-							log.debug('User.generateHash, called');
-    						return bcrypt.hashSync(password, bcrypt.genSaltSync(SALT_ROUNDS), null);
-    						};
 
 	var validateRole =	function(value) {
 							switch (value) {
@@ -59,7 +47,7 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 											},
 	                            username:   newUser.username,
 	                            email: 		newUser.email,
-								password: 	generateHash(newUser.password),
+								password: 	config.passport.generateHash(newUser.password),
 	                            organisation:	newUser.organisation,
 								role:		newUser.role
 								});
@@ -69,7 +57,7 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 
 	var updatePassword = function(id, newPassword, callback) {
 							log.info('User.changePassword, called');
-							User.update({_id: id}, {password: generateHash(newPassword)}, callback});
+							User.update({_id: id}, {password: config.passport.generateHash(newPassword)}, callback});
 							};
 
 	// Handle active users forgetting their password
