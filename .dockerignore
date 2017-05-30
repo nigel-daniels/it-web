@@ -3,12 +3,12 @@
 .git
 dist
 build
-jsxBuild
+jsx
 log
 README.md
 node_modules
-public/js/bower_components
+public/js/node_modules
 .dockerignore
+docker
 Dockerfile
 docker-compose.yaml
-asterionSwagger.yaml

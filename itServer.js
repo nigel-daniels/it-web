@@ -22,8 +22,6 @@ var bcrypt			= require('bcrypt-nodejs');
 // Email dependancies
 var nodemailer		= require('nodemailer');
 
-// Set the environment setting we are using
-var env = process.env.NODE_ENV === 'undefined' ? 'development' : process.env.NODE_ENV;
 
 // Load configuration files
 var config = {
@@ -31,6 +29,10 @@ var config = {
 	db:		require(__dirname + '/config/db'),
 	mail:	require(__dirname + '/config/mail')
 	};
+
+// Set the environment setting we are using
+var env = !process.env.NODE_ENV ? config.app.defaultEnv : process.env.NODE_ENV;
+var dbURI = !process.env.MONGO_URL ? config.db.mongourl : process.env.MONGO_URL;
 
 // Set the application and the variables it uses
 var app 			= express();			// This app
@@ -66,15 +68,15 @@ if(env === 'production') {
 
 // MONGO DB Setup
 // connect to the db
-var dbURI = !process.env.MONGO_URL?config.db.mongourl:process.env.MONGO_URL;
+
 
 //log.info('MongoDB URI: ' + dbURI);
-mongoose.connect(dbURI, function onMongooseError(err) {
+mongoose.connect(dbURI);/*, function onMongooseError(err) {
 	if (err) {
 		console.log('Error connecting to MongoDB ' + JSON.stringify(err));
 		throw err;
 		}
-	});
+	});*/
 
 
 // Now configure the application
@@ -97,7 +99,7 @@ var models = {
 
 // Load the app specific business logic
 var handlers = {
-	userHandler:	require(__dirname + '/handlers/userHandler')(models.User),
+	userHandler:			require(__dirname + '/handlers/userHandler')(models.User),
 	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')()
 	//keywordGroupsHandler: 			require(__dirname + '/handlers/keywordGroupsHandler')(models.KeywordGroups),
 	//groupKeywordsInAGroupHandler: 	require(__dirname + '/handlers/groupKeywordsInAGroupHandler')(models.GroupKeywordsInAGroup, models.Keywords, models.SuggestedKeywordValues)

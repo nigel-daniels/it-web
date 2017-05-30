@@ -10,6 +10,40 @@ define(['react', 'reactDom', 'itView'],
 
             el:				$('#main'),
 
+			events:			{
+							'click #signup':	'signup',
+							'click #login':		'login'
+							},
+
+			signup:			function(event) {
+								$.post('/signup', {
+									first: $('input[name=first]').val(),
+									last: $('input[name=last]').val(),
+									organisation: $('input[name=organisation]').val(),
+									username: $('input[name=username]').val(),
+									password: $('input[name=password]').val(),
+									password: $('input[name=email]').val(),
+									})
+									.done(function() {
+										window.location.hash = 'index';
+									})
+									.fail(function(jqXHR, textStatus, errorThrown) {
+
+									});
+								},
+
+			login:			function(event) {
+								$.post('/login', {
+									username: $('input[name=login-name]').val(),
+									password: $('input[name=login-password]').val()
+									})
+									.done(function() {
+										window.location.hash = 'index';
+									})
+									.fail(function(err) {
+
+									});
+								},
             render:         function() {
                                 ReactDOM.render(<Login/>, this.el);
                                 }
@@ -20,9 +54,6 @@ define(['react', 'reactDom', 'itView'],
 
             handleAction(event) {
                 switch ($(event.currentTarget).attr('id')) {
-                    case 'login':
-
-                        break;
                     case 'login-forgot':
                         $('.login-title').text('Forgot Password');
                         $('.login-view').hide('slow');
@@ -34,18 +65,6 @@ define(['react', 'reactDom', 'itView'],
                         $('.login-view').hide('slow');
                         $('.signup-view').show('slow');
 						$('#first').focus();
-                        break;
-                    case 'forgot':
-                        $('.login-title').text('Login');
-                        $('.forgot-view').hide('slow');
-                        $('.login-view').show('slow');
-						$('#login-name').focus();
-                        break;
-                    case 'signup':
-                        $('.login-title').text('Login');
-                        $('.signup-view').hide('slow');
-                        $('.login-view').show('slow');
-						$('#login-name').focus();
                         break;
                     }
                 }
@@ -85,7 +104,7 @@ define(['react', 'reactDom', 'itView'],
             										</div>
             									</div>
             									<div className="form-group">
-            										<button type="button" className="btn btn-primary btn-block" onClick={this.handleAction} id="login" tabIndex="10">Sign in</button>
+            										<button type="button" className="btn btn-primary btn-block" id="login" tabIndex="10">Sign in</button>
             									</div>
             								</form>
             								<div className="row login-footer">
@@ -115,7 +134,7 @@ define(['react', 'reactDom', 'itView'],
             										<p htmlFor="user-name" className="sr-only">User Name</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-user" aria-hidden="true"/></div>
-            											<input type="text" id="user-name" className="form-control" tabIndex="35" placeholder="User name" required/>
+            											<input type="text" id="username" className="form-control" tabIndex="35" placeholder="User name" required/>
             										</div>
             									</div>
             									<div className="form-group">
@@ -126,10 +145,10 @@ define(['react', 'reactDom', 'itView'],
             										</div>
             									</div>
             									<div className="form-group input-block-ico">
-            										<p htmlFor="email1" className="sr-only">Email address</p>
+            										<p htmlFor="email" className="sr-only">Email address</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-envelope" aria-hidden="true"/></div>
-            											<input type="email" id="email1" className="form-control" tabIndex="45" placeholder="E-mail" required/>
+            											<input type="email" id="email" className="form-control" tabIndex="45" placeholder="E-mail" required/>
             										</div>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-envelope" aria-hidden="true"/></div>
@@ -137,10 +156,10 @@ define(['react', 'reactDom', 'itView'],
             										</div>
             									</div>
             									<div className="form-group input-block-ico">
-            										<p htmlFor="password1" className="sr-only">Password</p>
+            										<p htmlFor="password" className="sr-only">Password</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="fa fa-key" aria-hidden="true"/></div>
-            											<input type="password" id="password1" className="form-control" tabIndex="55" placeholder="Password" required/>
+            											<input type="password" id="password" className="form-control" tabIndex="55" placeholder="Password" required/>
             										</div>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="fa fa-key" aria-hidden="true"/></div>
@@ -156,7 +175,7 @@ define(['react', 'reactDom', 'itView'],
             										</p>
             									</div>
             									<div className="form-group">
-            										<button className="btn btn-primary btn-block" type="button" onClick={this.handleAction} id="signup" tabIndex="80">Sign up</button>
+            										<button className="btn btn-primary btn-block" type="button" id="signup" tabIndex="80">Sign up</button>
             									</div>
             								</form>
             							</div>
@@ -172,7 +191,7 @@ define(['react', 'reactDom', 'itView'],
             										</div>
             									</div>
             									<div className="form-group">
-            										<button className="btn btn-primary btn-block" type="button" onClick={this.handleAction} id="forgot" tabIndex="90">Send e-mail</button>
+            										<button className="btn btn-primary btn-block" type="button" id="forgot" tabIndex="90">Send e-mail</button>
             									</div>
             								</form>
             							</div>

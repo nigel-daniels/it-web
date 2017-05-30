@@ -9,7 +9,7 @@ module.exports = function(app, handlers, passport) {
 								};
 
 	app.post('/login', passport.authenticate('localLogin', {successRedirect: '/#index', failureRedirects: '/#login'}));
-	app.post('/signup', passport.authenticate('signup', {successRedirect: '/#index', failureRedirect: '#'}));
+	app.post('/signup', passport.authenticate('localSignup', {successRedirect: '/#index', failureRedirect: '#'}));
 
 	app.post('/forgotpassword', handlers.authenticationHandler.forgotPassword);
 	app.post('/changepassword',  handlers.authenticationHandler.changePassword);

@@ -2,8 +2,7 @@
  * Copyright 2017 Initiate Thinking
  * Author: Nigel Daniels
  */
-@import url("../js/bower_components/bootstrap/dist/css/bootstrap-theme.css");
-@import url("../js/bower_components/bootstrap/dist/css/bootstrap.css");
-@import url("../js/bower_components/ie10-viewport-bug-workaround/dist/ie10-viewport-bug-workaround.css");
-@import url("../js/bower_components/font-awesome/css/font-awesome.css");
+@import url("../js/node_modules/bootstrap/dist/css/bootstrap-theme.css");
+@import url("../js/node_modules/bootstrap/dist/css/bootstrap.css");
+@import url("../js/node_modules/font-awesome/css/font-awesome.css");
 @import url("./it.css");

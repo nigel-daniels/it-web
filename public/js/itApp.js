@@ -5,19 +5,17 @@
 require.config({
 
     paths: {
-        require:            'bower_components/requirejs/require',
-        lodash:             'bower_components/lodash/dist/lodash',
-        jquery:             'bower_components/jquery/dist/jquery',
-        bootstrap:          'bower_components/bootstrap/dist/js/bootstrap',
-        backbone:           'bower_components/backbone/backbone',
-        ie10workaround:     'bower_components/ie10-viewport-bug-workaround/dist/ie10-viewport-bug-workaround',
-        react:              'bower_components/react/react-with-addons',
-        reactDom:           'bower_components/react/react-dom',
-        reactBootstrap:     'bower_components/react-bootstrap/react-bootstrap',
-        babel:              'bower_components/requirejs-react-jsx/babel-5.8.34.min',
-        jsx:                'bower_components/requirejs-react-jsx/jsx',
-        text:               'bower_components/requirejs-text/text',
-        bcrypt:             'bower_components/bcrypt/bcrypt',
+        require:            'node_modules/requirejs/require',
+        lodash:             'node_modules/lodash/lodash',
+        jquery:             'node_modules/jquery/dist/jquery',
+        bootstrap:          'node_modules/bootstrap/dist/js/bootstrap',
+        backbone:           'node_modules/backbone/backbone',
+        ie10workaround:     'node_modules/ie10-viewport-bug-workaround.js/ie10-viewport-bug-workaround',
+        react:              'node_modules/react/dist/react-with-addons',
+        reactDom:           'node_modules/react-dom/dist/react-dom',
+        babel:              'node_modules/requirejs-react-jsx/babel-5.8.34.min',
+        jsx:                'node_modules/requirejs-react-jsx/jsx',
+        text:               'node_modules/requirejs-text/text',
 
         app:                'app',
         media:              '../media',
@@ -43,9 +41,9 @@ require.config({
         react:          {
                         exports:    'React'
                         },
-        reactBootstrap: {
+        /*reactBootstrap: {
                         deps:       ['react']
-                        },
+                    },*/
         bootstrap:      {
                         deps: 		['jquery'],
                         exports:	'bootstrap'
@@ -55,7 +53,7 @@ require.config({
                         },
         itInit:         {
                         deps: 	['bootstrap', 'ie10workaround', 'backbone',
-                                'react', 'reactDom', 'jsx', 'bcrypt']
+                                'react', 'reactDom', 'jsx']
                         }
         },
 

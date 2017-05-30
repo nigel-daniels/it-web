@@ -11,16 +11,15 @@ services:
 
     it-web:
         build: .
+        environment:
+            - MONGO_URL=mongodb://mongo/itdb
         ports:
             - 3000:3000
         volumes:
-            - .:/it-web
-            - null-vol:/it-web/node_modules
-            - null-vol:/it-web/public/js/bower_components
+            - .:/usr/local/it-web
+            - /usr/local/it-web/node_modules
+            - /usr/local/it-web/public/js/node_modules
         command:
             npm run dev
         depends_on:
             - mongo
-
-volumes:
-  null-vol:

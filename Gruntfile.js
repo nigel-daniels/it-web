@@ -58,7 +58,7 @@ module.exports = function(grunt) {
 					buildApp:	{
 								options:{
 										process: function (content, srcpath) {
-											if (!srcpath.startsWith('public/js/bower_components') && srcpath.endsWith('.js')) {
+											if (!srcpath.startsWith('public/js/node_modules') && srcpath.endsWith('.js')) {
     											return content.replace(/jsx!/g, '');
 											} else {
 												return content;
@@ -68,13 +68,13 @@ module.exports = function(grunt) {
 								files:	[
 										{expand: true, cwd: '<%= jsxPath %>/app/', src: ['**'], dest: '<%= buildPath %>/<%= appPath %>/js/'},
 										{expand: true, cwd: '<%= appPath %>/js/', src: ['*.js'], dest: '<%= buildPath %>/<%= appPath %>/js/'},
-										{expand: true, cwd: '<%= appPath %>/js/bower_components/', src: ['**'], dest: '<%= buildPath %>/<%= appPath %>/js/bower_components/'},
+										{expand: true, cwd: '<%= appPath %>/js/node_modules/', src: ['**'], dest: '<%= buildPath %>/<%= appPath %>/js/node_modules/'},
 										{expand: true, cwd: '<%= appPath %>/js/app/', src: ['**/*.js'], dest: '<%= buildPath %>/<%= appPath %>/js/app/'},
 										{expand: true, cwd: '<%= appPath %>/css/', src: ['*'], dest: '<%= buildPath %>/<%= appPath %>/css/'}
 								      	]
 								},
 					copyFonts:	{
-								files: [{expand: true, cwd: '<%= appPath %>/js/bower_components/font-awesome/fonts/', src: ['*.*'], dest: '<%= distPath %>/public/js/bower_components/font-awesome/fonts/'}]
+								files: [{expand: true, cwd: '<%= appPath %>/js/node_modules/font-awesome/fonts/', src: ['*.*'], dest: '<%= distPath %>/public/js/node_modules/font-awesome/fonts/'}]
 								}
 					},
 

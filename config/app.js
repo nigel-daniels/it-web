@@ -13,5 +13,6 @@ module.exports = {
 	sessionKey:		'd9jk£4jas$lddh',	// Key used by session
 	urlEncodeMax:	'1Mb',				// Limit on form submissions
 	jsonMax:		'1Mb',				// Limit on JSON submissions
-	shutdownTimout:	61					// Seconds to allow for the connection pool to close
+	shutdownTimout:	60,					// Seconds to allow for the connection pool to close
+	defaultEnv:		'development'		// This is the default env to use unless one was set 
 };

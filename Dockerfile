@@ -1,10 +1,8 @@
 FROM it-base:latest
 
-RUN adduser -g users -D ituser
+RUN mkdir /usr/local/it-web
 
-USER ituser
-
-WORKDIR /home/ituser/
+WORKDIR /usr/local/it-web
 
 COPY package.json .
 
@@ -12,14 +10,16 @@ RUN npm install
 
 RUN mkdir -p public/js
 
-WORKDIR /home/ituser/it-web/public/js/
+WORKDIR /usr/local/it-web/public/js
 
-COPY public/js/bower.json .
+COPY public/js/package.json /usr/local/it-web/public/js
 
-RUN bower install --allow-root
+RUN npm install
 
-WORKDIR /home/ituser/it-web
+RUN npm -g install nodemon
 
-VOLUME /home/ituser/it-web
+WORKDIR /usr/local/it-web
 
-CMD /bin/sh
+VOLUME /usr/local/it-web
+
+CMD /bin/bash
