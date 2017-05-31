@@ -2,8 +2,8 @@
  * Copyright 2017 Initiate Thinking
  * Author: Nigel Daniels
  */
-module.exports = function(passport, passportLocal, bcrypt, User) {
-	var SALT_ROUNDS = 10;
+module.exports = function(passport, passportLocal, User) {
+
 
 	/* ***************************************
 	 *  Passport login sessions
@@ -25,11 +25,11 @@ module.exports = function(passport, passportLocal, bcrypt, User) {
 	/* ***************************************
 	 *  LOCAL SIGNUP Strategy
 	 *************************************** */
-	passport.use('localSignup', new passportLocal(
+	passport.use('local-signup', new passportLocal(
 		{passReqToCallback:	true},
 
 		function(req, username, password, done) {
-
+			console.log('passport - local-signup, called');
 			// Check we do have a user name and password
 			if (username === 'undefined') {
 				return done(new Error('The user name is required.'));
@@ -42,7 +42,7 @@ module.exports = function(passport, passportLocal, bcrypt, User) {
 				if (err) {return done(err);}
 
 				if (user) {
-					return done(new Error('The user name ' + username + + ' is in use.'));
+					return done(new Error('The user name ' + username + ' is in use.'));
 				} else {
 					// Ok now let's validate the required fields are here
 					if ((req.body.name.first === 'undefined') || (req.body.name.last === 'undefined')) {
@@ -75,7 +75,7 @@ module.exports = function(passport, passportLocal, bcrypt, User) {
 													last: req.body.name.last
 													},
 									username:		username,
-									password:		generateHash(password),
+									password:		User.generateHash(password),
 									email:			req.body.email,
 									organisation: 	req.body.organisation,
 									role:			role
@@ -98,16 +98,16 @@ module.exports = function(passport, passportLocal, bcrypt, User) {
 	/* ***************************************
 	 *  LOCAL LOGIN Strategy
 	 *************************************** */
-    passport.use('localLogin', new passportLocal(
+    passport.use('local-login', new passportLocal(
     	{passReqToCallback : true},
 
     	function(req, username, password, done) {
-    		log.debug('passport.login, called.');
+    		console.log('passport - local-login, called.');
     		User.findOne({username: username}, function(err, user) {
 				if (err) {return done(err);}
 
 				if (user) {
-					if (validatePassword(password)) {
+					if (User.validatePassword(password)) {
 						return done(null, user);
 					} else {
 						return done(new Error('Password provided was incorrect.'), false);
@@ -119,17 +119,4 @@ module.exports = function(passport, passportLocal, bcrypt, User) {
 			}
     	));
 
-	// Hash and salt the password
-	var generateHash = 		function(password) {
-								return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-								};
-
-	var	validatePassword = 	function(password, callback) {
-								return bcrypt.compareSync(password, this.password);
-								};
-
-	return {
-		generateHash:		generateHash,
-		validatePassword:	validatePassword
-		}
 	};

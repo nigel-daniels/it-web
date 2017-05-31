@@ -8,11 +8,12 @@ module.exports = function(app, handlers, passport) {
 								res.redirect('/');
 								};
 
-	app.post('/login', passport.authenticate('localLogin', {successRedirect: '/#index', failureRedirects: '/#login'}));
-	app.post('/signup', passport.authenticate('localSignup', {successRedirect: '/#index', failureRedirect: '#'}));
+	app.post('/signup', passport.authenticate('local-signup', {successRedirect: '/#login', failureRedirect: '/#'}));
+	app.post('/login', passport.authenticate('local-login', {successRedirect: '/#index', failureRedirects: '/#login'}));
+
 
 	app.post('/forgotpassword', handlers.authenticationHandler.forgotPassword);
-	app.post('/changepassword',  handlers.authenticationHandler.changePassword);
+	app.post('/changepassword', isAuthenticated, handlers.authenticationHandler.changePassword);
 
 	app.get('/logout', handlers.authenticationHandler.logout);
 	};

@@ -3,7 +3,7 @@
  * Author: Nigel Daniels
  */
 module.exports = function(mongoose, bcrypt, nodemailer, config) {
-
+	var SALT_ROUNDS = 10;
 
 	var Role = 	{
 				USER:	0,
@@ -23,12 +23,20 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 			role:		{type: Number, default: Role.USER, required: true}
 			});
 
+	UserSchema.methods.generateHash = function(password) {
+		return bcrypt.hashSync(password, bcrypt.genSaltSync(SALT_ROUNDS), null);
+		};
+
+	UserSchema.methods.validatePassword = function(password, callback) {
+		return bcrypt.compareSync(password, this.password);
+		};
+
 	// Set up the model
 	var User = mongoose.model('User', UserSchema);
 
 	var validateRole =	function(value) {
 							switch (value) {
-								case Role.User:
+								case Role.USER:
 									return true;
 								case Role.ADMIN:
 									return true;
@@ -36,24 +44,6 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 									return false;
 								}
 							};
-
-	// Create method that hashes pwd
-	var createUser = 		function(newUser, callback) {
-
-                    		var user = new User({
-                    			name: 		{
-											first:	newUser.first,
-											last:	newUser.last
-											},
-	                            username:   newUser.username,
-	                            email: 		newUser.email,
-								password: 	config.passport.generateHash(newUser.password),
-	                            organisation:	newUser.organisation,
-								role:		newUser.role
-								});
-
-                    		user.save(callback);
-                          	};
 
 	var updatePassword = function(id, newPassword, callback) {
 							log.info('User.changePassword, called');
@@ -100,8 +90,6 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 			Role:			Role,
 
 			validateRole:	validateRole,
-
-			createUser:		createUser,
 
 			updatePassword:	updatePassword,
 			forgotPassword:	forgotPassword

@@ -24,11 +24,12 @@ define(['react', 'reactDom', 'itView'],
 									password: $('input[name=password]').val(),
 									password: $('input[name=email]').val(),
 									})
-									.done(function() {
+									.done(function(data, textStatus, jqXHR) {
+										console.log('LoginView - signup, data: ' + JSON.stringify(data) + ', textStatus: ' + textStatus +', jqXHR: ' + JSON.stringify(jqXHR));
 										window.location.hash = 'index';
 									})
 									.fail(function(jqXHR, textStatus, errorThrown) {
-
+										console.log('LoginView - signup, jqXHR: ' + JSON.stringify(jqXHR) + ', textStatus: ' + textStatus +', errorThrown: ' + JSON.stringify(errorThrown));
 									});
 								},
 
@@ -37,11 +38,12 @@ define(['react', 'reactDom', 'itView'],
 									username: $('input[name=login-name]').val(),
 									password: $('input[name=login-password]').val()
 									})
-									.done(function() {
+									.done(function(data, textStatus, jqXHR) {
+										console.log('LoginView - login, data: ' + JSON.stringify(data) + ', textStatus: ' + textStatus +', jqXHR: ' + JSON.stringify(jqXHR));
 										window.location.hash = 'index';
 									})
-									.fail(function(err) {
-
+									.fail(function(jqXHR, textStatus, errorThrown) {
+										console.log('LoginView - login, jqXHR: ' + JSON.stringify(jqXHR) + ', textStatus: ' + textStatus +', errorThrown: ' + JSON.stringify(errorThrown));
 									});
 								},
             render:         function() {

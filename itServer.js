@@ -106,7 +106,7 @@ var handlers = {
 	};
 
 // Now load the passport config (it needs the user data model
-config.passport = require(__dirname + '/config/passport')(passport, passportLocal, bcrypt, models.User);
+config.passport = require(__dirname + '/config/passport')(passport, passportLocal, models.User);
 
 // configure the stuff for passport auth
 app.use(session({
