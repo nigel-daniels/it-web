@@ -16,36 +16,41 @@ define(['react', 'reactDom', 'itView'],
 							},
 
 			signup:			function(event) {
+								console.log('LoginView - signup, called');
+								console.log('username: ' + $('#username').val());
 								$.post('/signup', {
-									first: $('input[name=first]').val(),
-									last: $('input[name=last]').val(),
-									organisation: $('input[name=organisation]').val(),
-									username: $('input[name=username]').val(),
-									password: $('input[name=password]').val(),
-									password: $('input[name=email]').val(),
+									first: $('#first').val(),
+									last: $('#last').val(),
+									organisation: $('#organisation').val(),
+									username: $('#username').val(),
+									password: $('#password').val(),
+									email: $('#email').val(),
 									})
-									.done(function(data, textStatus, jqXHR) {
-										console.log('LoginView - signup, data: ' + JSON.stringify(data) + ', textStatus: ' + textStatus +', jqXHR: ' + JSON.stringify(jqXHR));
-										window.location.hash = 'index';
+									.done(function() {
+										$('.login-title').text('Login');
+				                        $('.signup-view').hide('slow');
+				                        $('.login-view').show('slow');
+										$('#login-name').focus();
 									})
-									.fail(function(jqXHR, textStatus, errorThrown) {
-										console.log('LoginView - signup, jqXHR: ' + JSON.stringify(jqXHR) + ', textStatus: ' + textStatus +', errorThrown: ' + JSON.stringify(errorThrown));
+									.fail(function(err) {
+										console.log('LoginView - signup fail: ' + err.responseText);
 									});
 								},
 
 			login:			function(event) {
+								console.log('LoginView - login, called');
 								$.post('/login', {
-									username: $('input[name=login-name]').val(),
-									password: $('input[name=login-password]').val()
+									username: $('#login-name').val(),
+									password: $('#login-password').val()
 									})
-									.done(function(data, textStatus, jqXHR) {
-										console.log('LoginView - login, data: ' + JSON.stringify(data) + ', textStatus: ' + textStatus +', jqXHR: ' + JSON.stringify(jqXHR));
+									.done(function() {
 										window.location.hash = 'index';
 									})
-									.fail(function(jqXHR, textStatus, errorThrown) {
-										console.log('LoginView - login, jqXHR: ' + JSON.stringify(jqXHR) + ', textStatus: ' + textStatus +', errorThrown: ' + JSON.stringify(errorThrown));
+									.fail(function(err) {
+										console.log('LoginView - login fail: ' + err.responseText);
 									});
 								},
+
             render:         function() {
                                 ReactDOM.render(<Login/>, this.el);
                                 }
@@ -62,11 +67,23 @@ define(['react', 'reactDom', 'itView'],
                         $('.forgot-view').show('slow');
 						$('#forgot-name').focus();
                         break;
+					case 'forgot-login':
+                        $('.login-title').text('Login');
+                        $('.forgot-view').hide('slow');
+                        $('.login-view').show('slow');
+						$('#login-name').focus();
+                        break;
                     case 'login-signup':
                         $('.login-title').text('Sign Up');
                         $('.login-view').hide('slow');
                         $('.signup-view').show('slow');
 						$('#first').focus();
+                        break;
+					case 'signup-login':
+                        $('.login-title').text('Login');
+                        $('.signup-view').hide('slow');
+                        $('.login-view').show('slow');
+						$('#login-name').focus();
                         break;
                     }
                 }
@@ -178,6 +195,7 @@ define(['react', 'reactDom', 'itView'],
             									</div>
             									<div className="form-group">
             										<button className="btn btn-primary btn-block" type="button" id="signup" tabIndex="80">Sign up</button>
+													<button className="btn btn-block" type="button" id="signup-login" onClick={this.handleAction}tabIndex="85">Back to Login</button>
             									</div>
             								</form>
             							</div>
@@ -189,11 +207,12 @@ define(['react', 'reactDom', 'itView'],
             										<p htmlFor="forgot-name" className="sr-only">User name</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-user" aria-hidden="true"/></div>
-            											<input type="text" id="forgot-name" className="form-control" tabIndex="85" placeholder="User name" required/>
+            											<input type="text" id="forgot-name" className="form-control" tabIndex="90" placeholder="User name" required/>
             										</div>
             									</div>
             									<div className="form-group">
-            										<button className="btn btn-primary btn-block" type="button" id="forgot" tabIndex="90">Send e-mail</button>
+            										<button className="btn btn-primary btn-block" type="button" id="forgot" tabIndex="95">Send e-mail</button>
+													<button className="btn btn-block" type="button" id="forgot-login" onClick={this.handleAction}tabIndex="100">Back to Login</button>
             									</div>
             								</form>
             							</div>

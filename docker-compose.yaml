@@ -7,7 +7,7 @@ services:
         ports:
             - 27017:27017
         volumes:
-            - ~/git/docker/mongo/data:/data/db
+            - ~/git/it-web/docker/mongo/data:/data/db
 
     it-web:
         build: .

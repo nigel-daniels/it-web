@@ -7,25 +7,21 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 
 	var Role = 	{
 				USER:	0,
-             	ADMIN:	1,
+             	ADMIN:	1
              	};
 
 	// Create the Mongoose Schema
 	var UserSchema = new mongoose.Schema({
-            name: 		{
-                        first:	{type: String, required: true},
-                        last:	{type: String, required: true}
-                        },
-            username:   {type: String, unique: true, required: true},
-            password:	{type: String, required: true},
-			email:		{type: String, unique: true},
-            organisation:	{type: mongoose.Schema.ObjectId},
-			role:		{type: Number, default: Role.USER, required: true}
+            name: 			{
+                        	first:	{type: String},
+                        	last:	{type: String}
+                        	},
+            username:   	{type: String, unique: true, required: true},
+            password:		{type: String, required: true},
+			email:			{type: String, unique: true, required: true},
+            organisation:	{type: String},
+			role:			{type: Number, default: Role.USER}
 			});
-
-	UserSchema.methods.generateHash = function(password) {
-		return bcrypt.hashSync(password, bcrypt.genSaltSync(SALT_ROUNDS), null);
-		};
 
 	UserSchema.methods.validatePassword = function(password, callback) {
 		return bcrypt.compareSync(password, this.password);
@@ -45,9 +41,13 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 								}
 							};
 
+	var generateHash = 	function(password) {
+							return bcrypt.hashSync(password, bcrypt.genSaltSync(SALT_ROUNDS), null);
+							};
+
 	var updatePassword = function(id, newPassword, callback) {
 							log.info('User.changePassword, called');
-							User.update({_id: id}, {password: config.passport.generateHash(newPassword)}, callback);
+							User.update({_id: id}, {password: this.generateHash(newPassword)}, callback);
 							};
 
 	// Handle active users forgetting their password
@@ -90,7 +90,7 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 			Role:			Role,
 
 			validateRole:	validateRole,
-
+			generateHash:	generateHash,
 			updatePassword:	updatePassword,
 			forgotPassword:	forgotPassword
 			};

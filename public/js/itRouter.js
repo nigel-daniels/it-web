@@ -43,18 +43,18 @@ define(['jsx!app/login/views/LoginView', 'jsx!app/index/views/IndexView',
 
 			checkLogin:		function(callback) {
 								console.log('router.checkLogin, called');
-								/*$.ajax("/authenticated",
+								$.ajax("/authenticate",
 									{
 									method: 	"GET",
 									success:	function() {
-													log.debug('router.checkLogin, logged in');
+													//log.debug('router.checkLogin, logged in');
 													return callback(true);
 													},
 									error:		function() {
-													log.debug('router.checkLogin, logged out');
+													//log.debug('router.checkLogin, logged out');
 													return callback(false);
 													}
-									});*/
+									});
 								return callback(true);
 								},
 

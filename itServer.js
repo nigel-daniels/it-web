@@ -11,14 +11,18 @@ var path 			= require('path');
 var session			= require('express-session');
 var request			= require('request-json');
 var bodyParser 		= require('body-parser');
+var cookieParser 	= require('cookie-parser');
 var favicon 		= require('serve-favicon');
+
 // Persistence dependanices
 var logger			= require('morgan');
 var mongoose 		= require('mongoose');
+
 // login dependanices
 var passport 		= require('passport');
 var passportLocal 	= require('passport-local').Strategy;
 var bcrypt			= require('bcrypt-nodejs');
+
 // Email dependancies
 var nodemailer		= require('nodemailer');
 
@@ -81,6 +85,7 @@ mongoose.connect(dbURI);/*, function onMongooseError(err) {
 
 // Now configure the application
 app.use(favicon(__dirname + '/images/favicon.ico'));
+app.use(cookieParser());			// Read cookies (needed for auth)
 app.use(bodyParser.urlencoded({		// Needed for html forms
 	limit: config.app.urlEncodeMax, extended: false
 	}));
@@ -100,9 +105,7 @@ var models = {
 // Load the app specific business logic
 var handlers = {
 	userHandler:			require(__dirname + '/handlers/userHandler')(models.User),
-	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')()
-	//keywordGroupsHandler: 			require(__dirname + '/handlers/keywordGroupsHandler')(models.KeywordGroups),
-	//groupKeywordsInAGroupHandler: 	require(__dirname + '/handlers/groupKeywordsInAGroupHandler')(models.GroupKeywordsInAGroup, models.Keywords, models.SuggestedKeywordValues)
+	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')(models.User)
 	};
 
 // Now load the passport config (it needs the user data model
@@ -111,7 +114,7 @@ config.passport = require(__dirname + '/config/passport')(passport, passportLoca
 // configure the stuff for passport auth
 app.use(session({
 	secret:				config.app.sessionKey,
-	resave:				false,		// TODO Does the passport store implement touch? if not and there is a short expire set to true
+	//resave:				false,		// TODO Does the passport store implement touch? if not and there is a short expire set to true
 	saveUninitialized:	false		// Set to false to comply with cookie laws
 	}));
 app.use(passport.initialize());
@@ -142,13 +145,26 @@ app.use(function (req, res, next) {
 // Log all of the requests
 if (env === 'development') {
 	app.get('*', function(req, res, next) {
-		console.log('itServer - req.url :' + req.url);
+		console.log('itServer - get, req.url :' + req.url);
+		next();
+		});
+	app.post('*', function(req, res, next) {
+		console.log('itServer - post, req.url :' + req.url);
+		next();
+		});
+	app.put('*', function(req, res, next) {
+		console.log('itServer - put, req.url :' + req.url);
+		next();
+		});
+	app.delete('*', function(req, res, next) {
+		console.log('itServer - del, req.url :' + req.url);
 		next();
 		});
 	}
 
 // Now define the starting API
 app.get('/', function(req, res) {
+	console.log('itServer - / called, serving index.')
 	res.render('index.jsx'); // removed {layout: false} parameter
 	});
 
