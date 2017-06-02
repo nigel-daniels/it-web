@@ -10,11 +10,6 @@ define(['react', 'reactDom', 'itView'],
 
             el:				$('#main'),
 
-			events:			{
-							'click #signup':	'signup',
-							'click #login':		'login'
-							},
-
 			signup:			function(event) {
 								console.log('LoginView - signup, called');
 								console.log('username: ' + $('#username').val());
@@ -34,6 +29,13 @@ define(['react', 'reactDom', 'itView'],
 									})
 									.fail(function(err) {
 										console.log('LoginView - signup fail: ' + err.responseText);
+										$.notify({
+											title: '<strong>Signup Error</strong>',
+											icon: 'glyphicon glyphicon-warning-sign',
+											message: err.responseText
+											},{
+												type: 'danger'
+											});
 									});
 								},
 
@@ -47,17 +49,54 @@ define(['react', 'reactDom', 'itView'],
 										window.location.hash = 'index';
 									})
 									.fail(function(err) {
- 										if (err.status === 400) {
+										if (err.status === 400) {
 											console.log('LoginView - login, bad username or password provided.');
+											$.notify({
+												title: '<strong>Bad Credentials</strong>',
+												icon: 'fa fa-lock',
+												message: 'The user name or password was incorrect.'
+												});
 										} else {
 											console.log('LoginView - login, error: ' + err.responseText);
+											$.notify({
+												title: '<strong>Login Error</strong>',
+												icon: 'glyphicon glyphicon-warning-sign',
+												message: err.responseText
+												},{
+												type: 'danger'
+												});
 											}
-									});
+										});
+								},
+
+			forgot:			function() {
+
 								},
 
             render:         function() {
                                 ReactDOM.render(<Login/>, this.el);
-                                }
+
+								var _this = this;
+
+								$('#login-form').validator().on('submit', function (event) {
+  									if (!event.isDefaultPrevented()) {
+										_this.login(event);
+  										}
+									});
+
+								$('#signup-form').validator().on('submit', function (event) {
+  									if (!event.isDefaultPrevented()) {
+										_this.signup(event);
+  										}
+									});
+
+								$('#forgot-form').validator().on('submit', function (event) {
+  									if (!event.isDefaultPrevented()) {
+										_this.forgot(event);
+  										}
+									});
+								}
+
 			});
 
 
@@ -115,7 +154,7 @@ define(['react', 'reactDom', 'itView'],
             						</div>
             						<div className="panel-body">
             							<div className="login-view">
-            								<form className="form-horizontal login-form">
+            								<form className="form-horizontal login-form" id="login-form">
             									<div className="form-group input-block-ico">
             										<div className="input-group login-name-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-user" aria-hidden="true"/></div>
@@ -125,9 +164,10 @@ define(['react', 'reactDom', 'itView'],
             											<div className="input-group-addon login-password-addon"><span className="fa fa-key" aria-hidden="true"/></div>
             											<input type="password" className="form-control login-password-input" id="login-password" tabIndex="5" placeholder="Password" required/>
             										</div>
+													<div className="help-block with-errors"></div>
             									</div>
             									<div className="form-group">
-            										<button type="button" className="btn btn-primary btn-block" id="login" tabIndex="10">Sign in</button>
+            										<button type="submit" className="btn btn-primary btn-block" id="login" tabIndex="10">Sign in</button>
             									</div>
             								</form>
             								<div className="row login-footer">
@@ -141,7 +181,7 @@ define(['react', 'reactDom', 'itView'],
             							</div>
 
             							<div className="signup-view" hidden>
-            								<form className="form-horizontal signup-form">
+            								<form className="form-horizontal signup-form" id="signup-form">
             									<div className="form-group input-block-ico">
             										<p htmlFor="first" className="sr-only">Your Name</p>
             										<div className="input-group">
@@ -152,6 +192,7 @@ define(['react', 'reactDom', 'itView'],
             											<div className="input-group-addon login-name-addon"><span className="fa fa-address-card-o" aria-hidden="true"/></div>
             											<input type="text" id="last" className="form-control" tabIndex="30" placeholder="Last/Family name" required/>
             										</div>
+													<div className="help-block with-errors"></div>
             									</div>
             									<div className="form-group">
             										<p htmlFor="user-name" className="sr-only">User Name</p>
@@ -159,6 +200,7 @@ define(['react', 'reactDom', 'itView'],
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-user" aria-hidden="true"/></div>
             											<input type="text" id="username" className="form-control" tabIndex="35" placeholder="User name" required/>
             										</div>
+													<div className="help-block with-errors"></div>
             									</div>
             									<div className="form-group">
             										<p htmlFor="organisation" className="sr-only">Organisation Name</p>
@@ -171,12 +213,13 @@ define(['react', 'reactDom', 'itView'],
             										<p htmlFor="email" className="sr-only">Email address</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-envelope" aria-hidden="true"/></div>
-            											<input type="email" id="email" className="form-control" tabIndex="45" placeholder="E-mail" required/>
+            											<input type="email" id="email" className="form-control" tabIndex="45" placeholder="E-mail" data-error="The e-mail is not valid." required/>
             										</div>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-envelope" aria-hidden="true"/></div>
-            											<input type="email" id="email2" className="form-control" tabIndex="50" placeholder="Validate e-mail" required/>
+            											<input type="email" id="email2" className="form-control" tabIndex="50" placeholder="Validate e-mail" data-error="The e-mail is not valid." data-match="#email" data-match-error="The e-mails do not match." required/>
             										</div>
+													<div className="help-block with-errors"></div>
             									</div>
             									<div className="form-group input-block-ico">
             										<p htmlFor="password" className="sr-only">Password</p>
@@ -186,19 +229,20 @@ define(['react', 'reactDom', 'itView'],
             										</div>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="fa fa-key" aria-hidden="true"/></div>
-            											<input type="password" id="password2" className="form-control" tabIndex="60" placeholder="Validate password" required/>
+            											<input type="password" id="password2" className="form-control" tabIndex="60" placeholder="Validate password" data-match="#password" data-match-error="The passwords do not match." required/>
             										</div>
+													<div className="help-block with-errors"></div>
             									</div>
             									<div className="form-group">
-            										<p>
-            											<input type="checkbox" id="terms" tabIndex="70"/> I agree to the <a id="termsLink">terms and conditions.</a>
-            										</p>
-            										<p>
-            											<input type="checkbox" id="privacy" tabIndex="75"/> I agree to the <a id="privacyLink">privacy policy.</a>
-            										</p>
+            										<input type="checkbox" id="terms" tabIndex="70" data-error="You need to read and agree to the terms and conditions." required/> I agree to the <a id="termsLink">terms and conditions.</a>
+													<div className="help-block with-errors"></div>
+												</div>
+												<div className="form-group">
+            										<input type="checkbox" id="privacy" tabIndex="75" data-error="You need to read agree to the privacy policy." required/> I agree to the <a id="privacyLink">privacy policy.</a>
+													<div className="help-block with-errors"></div>
             									</div>
             									<div className="form-group">
-            										<button className="btn btn-primary btn-block" type="button" id="signup" tabIndex="80">Sign up</button>
+            										<button className="btn btn-primary btn-block" type="submit" id="signup" tabIndex="80">Sign up</button>
 													<button className="btn btn-block" type="button" id="signup-login" onClick={this.handleAction}tabIndex="85">Back to Login</button>
             									</div>
             								</form>
@@ -206,13 +250,14 @@ define(['react', 'reactDom', 'itView'],
 
             							<div className="forgot-view" hidden>
             								<p className="forgot-copy">This will send a message to your registered account e-mail address, allowing you to reset your password.</p>
-            								<form className="form-horizontal forgot-form">
+            								<form className="form-horizontal forgot-form" id="forgot-form">
             									<div className="form-group">
             										<p htmlFor="forgot-name" className="sr-only">User name</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-user" aria-hidden="true"/></div>
             											<input type="text" id="forgot-name" className="form-control" tabIndex="90" placeholder="User name" required/>
             										</div>
+													<div className="help-block with-errors"></div>
             									</div>
             									<div className="form-group">
             										<button className="btn btn-primary btn-block" type="button" id="forgot" tabIndex="95">Send e-mail</button>

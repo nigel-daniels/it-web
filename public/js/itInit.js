@@ -7,9 +7,13 @@ define(['itRouter'], function(itRouter) {
 //	var router = null;
 
 	var initialize = function() {
-		//this.router = new itRouter();
-        Backbone.history.start();
 		console.log('itInit initialize, called.');
+        Backbone.history.start();
+
+		$.notifyDefaults({
+			type: 'minimalist'
+			});
+
         checkLogin(startPage);
         };
 

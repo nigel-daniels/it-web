@@ -16,6 +16,8 @@ require.config({
         babel:              'node_modules/requirejs-react-jsx/babel-5.8.34.min',
         jsx:                'node_modules/requirejs-react-jsx/jsx',
         text:               'node_modules/requirejs-text/text',
+        notify:             'node_modules/bootstrap-notify/bootstrap-notify',
+        validator:          'node_modules/bootstrap-validator/dist/validator',
 
         app:                'app',
         media:              '../media',
@@ -41,9 +43,6 @@ require.config({
         react:          {
                         exports:    'React'
                         },
-        /*reactBootstrap: {
-                        deps:       ['react']
-                    },*/
         bootstrap:      {
                         deps: 		['jquery'],
                         exports:	'bootstrap'
@@ -51,9 +50,15 @@ require.config({
         jsx:            {
                         deps:       ['babel', 'text']
                         },
+        notify:         {
+                        deps:       ['jquery']
+                        },
+        validator:      {
+                        deps:      ['jquery', 'bootstrap']
+                        },
         itInit:         {
                         deps: 	['bootstrap', 'ie10workaround', 'backbone',
-                                'react', 'reactDom', 'jsx']
+                                'react', 'reactDom', 'jsx', 'notify', 'validator']
                         }
         },
 

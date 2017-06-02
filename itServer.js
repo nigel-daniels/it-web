@@ -74,9 +74,6 @@ if(env === 'production') {
 
 // MONGO DB Setup
 // connect to the db
-
-
-//log.info('MongoDB URI: ' + dbURI);
 mongoose.connect(dbURI);/*, function onMongooseError(err) {
 	if (err) {
 		console.log('Error connecting to MongoDB ' + JSON.stringify(err));
@@ -99,9 +96,6 @@ app.use(bodyParser.json({			// Stop over stuffing of JSON
 //Load the app specific data models
 var models = {
 	User: 			require(__dirname + '/models/User')(mongoose, bcrypt, nodemailer, config),
-	//Asset: 						require(__dirname + '/models/Asset')(client, mongoose),
-	//KeywordGroups:				require(__dirname + '/models/KeywordGroups')(oracledb, config),
-	//GroupKeywordsInAGroup:		require(__dirname + '/models/GroupKeywordsInAGroup')(oracledb, config),
 	};
 
 
@@ -118,8 +112,8 @@ config.passport = require(__dirname + '/config/passport')(passport, passportLoca
 // configure the stuff for passport auth
 app.use(session({
 	secret:				config.app.sessionKey,
-	resave:				true,		// TODO Does the passport store implement touch? if not and there is a short expire set to true
-	saveUninitialized:	false		// Set to false to comply with cookie laws
+	resave:				true,
+	saveUninitialized:	false
 	}));
 app.use(passport.initialize());
 app.use(passport.session());
