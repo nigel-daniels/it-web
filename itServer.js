@@ -28,7 +28,6 @@ var bcrypt			= require('bcrypt-nodejs');
 // Email dependancies
 var nodemailer		= require('nodemailer');
 
-
 // Load configuration files
 var config = {
 	app:	require(__dirname + '/config/app'),

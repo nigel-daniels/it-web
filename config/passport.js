@@ -35,11 +35,13 @@ module.exports = function(passport, passportLocal, User) {
 						return done(null, user);
 					} else {
 						console.log('passport - local, Password provided was incorrect.');
-						return done(new Error('The credentials provided were not correct.'), false); // NLS
+						var error = {status: 401, message: 'The credentials provided were not correct.'};
+						return done(error, false); // NLS
 						}
 				} else {
 					console.log('passport - local, User for the user name ' + username + ' was not found.');
-					return done(new Error('The credentials provided were not correct.'), false); // NLS
+					var error = {status: 401, message: 'The credentials provided were not correct.'};
+					return done(error, false); // NLS
 					}
 				});
 			}
