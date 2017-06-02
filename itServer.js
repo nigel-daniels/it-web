@@ -7,7 +7,9 @@
 var express 		= require('express');
 var jsxEngine		= require('express-react-views').createEngine();
 var path 			= require('path');
+var fs				= require('fs');
 
+var https			= require('https');
 var session			= require('express-session');
 var request			= require('request-json');
 var bodyParser 		= require('body-parser');
@@ -116,7 +118,7 @@ config.passport = require(__dirname + '/config/passport')(passport, passportLoca
 // configure the stuff for passport auth
 app.use(session({
 	secret:				config.app.sessionKey,
-	//resave:				false,		// TODO Does the passport store implement touch? if not and there is a short expire set to true
+	resave:				true,		// TODO Does the passport store implement touch? if not and there is a short expire set to true
 	saveUninitialized:	false		// Set to false to comply with cookie laws
 	}));
 app.use(passport.initialize());
@@ -172,13 +174,16 @@ app.get('/', function(req, res) {
 	});
 
 
+// Now set up for https
+var privateKey	= fs.readFileSync(__dirname + '/config/it-test-key.pem');
+var certificate = fs.readFileSync(__dirname + '/config/it-test-crt.crt');
+
 
 // Finally start the server
-var server = app.listen(port, function(){
+https.createServer({key: privateKey, cert: certificate}, app).listen(port, function(){
 	startup = false;
 	console.log('IT Demo App, listening on port ' + port);
 	});
-
 
 
 // On a shutdown request clean up nicely

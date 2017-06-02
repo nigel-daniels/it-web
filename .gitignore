@@ -32,7 +32,7 @@ build/Release
 # Dependency directories
 node_modules
 jspm_packages
-public/js/bower_components
+public/js/node_modules
 docker/mongo/data
 
 # Optional npm cache directory
@@ -49,4 +49,9 @@ docker/mongo/data
 /jsx/
 /build/
 /dist/
+
+# Private files
 mail.js
+it-test-crt.crt
+it-test-csr.pem
+it-test-key.pem
