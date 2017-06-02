@@ -89,21 +89,16 @@ module.exports = function(User) {
             });
         }
 
-    function login(err, user) {
+    function login(req, res) {
         console.log('authenticationHandler - login, called.');
-        if (err) {
-            console.log('authenticationHandler - login, bad login.');
-            res.status(401).send(err.message);
-        } else {
-            console.log('authenticationHandler - login, ok.');
-            res.sendStatus(200);
-            }
+        res.sendStatus(200);
         }
 
     function authenticate(req, res) {
         console.log('authenticationHandler - authenticate, called.');
         if (req.isAuthenticated()) {
             console.log('authenticationHandler - authenticate, ok.');
+
             res.sendStatus(200);
         } else {
             console.log('authenticationHandler - authenticate, not ok.');

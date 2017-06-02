@@ -5,7 +5,7 @@
 module.exports = function(app, handlers, passport) {
 
 	app.post('/signup', handlers.authenticationHandler.signup);
-	app.post('/login', passport.authenticate('local-login', handlers.authenticationHandler.login));
+	app.post('/login', passport.authenticate('local'), handlers.authenticationHandler.login);
 
 
 	app.post('/forgotpassword', handlers.authenticationHandler.forgotPassword);

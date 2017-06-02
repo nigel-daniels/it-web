@@ -102,11 +102,13 @@ var models = {
 	//GroupKeywordsInAGroup:		require(__dirname + '/models/GroupKeywordsInAGroup')(oracledb, config),
 	};
 
+
 // Load the app specific business logic
 var handlers = {
 	userHandler:			require(__dirname + '/handlers/userHandler')(models.User),
 	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')(models.User)
 	};
+
 
 // Now load the passport config (it needs the user data model
 config.passport = require(__dirname + '/config/passport')(passport, passportLocal, models.User);
@@ -119,6 +121,7 @@ app.use(session({
 	}));
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 // Load the routes we are going to use
 require(__dirname + '/routes/authentication')(app, handlers, passport);

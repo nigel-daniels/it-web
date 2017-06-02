@@ -47,7 +47,11 @@ define(['react', 'reactDom', 'itView'],
 										window.location.hash = 'index';
 									})
 									.fail(function(err) {
-										console.log('LoginView - login fail: ' + err.responseText);
+ 										if (err.status === 400) {
+											console.log('LoginView - login, bad username or password provided.');
+										} else {
+											console.log('LoginView - login, error: ' + err.responseText);
+											}
 									});
 								},
 
