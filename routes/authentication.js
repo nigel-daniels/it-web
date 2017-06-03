@@ -8,8 +8,8 @@ module.exports = function(app, handlers, passport) {
 	app.post('/login', passport.authenticate('local'), handlers.authenticationHandler.login);
 
 
-	app.post('/forgotpassword', handlers.authenticationHandler.forgotPassword);
-	app.post('/changepassword', handlers.authenticationHandler.isAuthenticated, handlers.authenticationHandler.changePassword);
+	app.post('/forgot', handlers.authenticationHandler.forgotPassword);
+	app.post('/changepwd', handlers.authenticationHandler.isAuthenticated, handlers.authenticationHandler.changePassword);
 
 	app.get('/logout', handlers.authenticationHandler.logout);
 	app.get('/authenticate', handlers.authenticationHandler.authenticate);

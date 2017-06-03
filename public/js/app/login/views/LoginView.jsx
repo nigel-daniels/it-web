@@ -69,8 +69,33 @@ define(['react', 'reactDom', 'itView'],
 										});
 								},
 
-			forgot:			function() {
+			forgot:			function(event) {
+									console.log('LoginView - forgot, called');
+									$.post('/forgot', {
+										username: $('#forgot-name').val()
+										})
+										.done(function() {
+											$.notify({
+												title: '<strong>Forgot password</strong>',
+												icon: 'fa fa-lock',
+												message: 'The reset email has been sent.'
+												});
 
+											$('.login-title').text('Login');
+					                        $('.forgot-view').hide('slow');
+					                        $('.login-view').show('slow');
+											$('#login-name').focus();
+										})
+										.fail(function(err) {
+											console.log('LoginView - login, error: ' + err.responseText);
+											$.notify({
+												title: '<strong>Login Error</strong>',
+												icon: 'glyphicon glyphicon-warning-sign',
+												message: err.responseText
+												},{
+												type: 'danger'
+												});
+											});
 								},
 
             render:         function() {
@@ -78,23 +103,33 @@ define(['react', 'reactDom', 'itView'],
 
 								var _this = this;
 
-								$('#login-form').validator().on('submit', function (event) {
-  									if (!event.isDefaultPrevented()) {
-										_this.login(event);
-  										}
+								$(function () {
+  									$('[data-toggle="tooltip"]').popover();
 									});
 
-								$('#signup-form').validator().on('submit', function (event) {
-  									if (!event.isDefaultPrevented()) {
-										_this.signup(event);
-  										}
-									});
+								$('#login-form').validator()
+									.on('submit', function (event) {
+  										if (!event.isDefaultPrevented()) {
+											_this.login(event);
+  											}
+										})
+									.off('input.bs.validator change.bs.validator focusout.bs.validator');
 
-								$('#forgot-form').validator().on('submit', function (event) {
-  									if (!event.isDefaultPrevented()) {
-										_this.forgot(event);
-  										}
-									});
+								$('#signup-form').validator()
+									.on('submit', function (event) {
+	  									if (!event.isDefaultPrevented()) {
+											_this.signup(event);
+	  										}
+										})
+									.off('input.bs.validator change.bs.validator focusout.bs.validator');
+
+								$('#forgot-form').validator()
+									.on('submit', function (event) {
+	  									if (!event.isDefaultPrevented()) {
+											_this.forgot(event);
+	  										}
+										})
+									.off('input.bs.validator change.bs.validator focusout.bs.validator');
 								}
 
 			});
@@ -133,6 +168,13 @@ define(['react', 'reactDom', 'itView'],
 
 
 		    render() {
+				var passwordPattern = "(?=^.{8,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$";
+				var rfc5322 = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\" +
+							"x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9]" +
+							"(?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]" +
+							"[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]" +
+							")|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\" +
+							"x0b\\x0c\\x0e-\\x7f])+)\\])"
 		        return (
                     <div className="container-fluid">
             			<div className="row">
@@ -158,13 +200,13 @@ define(['react', 'reactDom', 'itView'],
             									<div className="form-group input-block-ico">
             										<div className="input-group login-name-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-user" aria-hidden="true"/></div>
-            											<input type="text" className="form-control login-name-input" id="login-name" tabIndex='1' placeholder="User Name" required autoFocus/>
+            											<input type="text" className="form-control login-name-input" id="login-name" tabIndex='1' placeholder="User Name" data-error="The user name is required." required autoFocus/>
             										</div>
             										<div className="input-group login-password-group">
             											<div className="input-group-addon login-password-addon"><span className="fa fa-key" aria-hidden="true"/></div>
-            											<input type="password" className="form-control login-password-input" id="login-password" tabIndex="5" placeholder="Password" required/>
+            											<input type="password" className="form-control login-password-input" id="login-password" tabIndex="5" data-error="The password is required." placeholder="Password" required/>
             										</div>
-													<div className="help-block with-errors"></div>
+													<span className="help-block with-errors"></span>
             									</div>
             									<div className="form-group">
             										<button type="submit" className="btn btn-primary btn-block" id="login" tabIndex="10">Sign in</button>
@@ -186,60 +228,60 @@ define(['react', 'reactDom', 'itView'],
             										<p htmlFor="first" className="sr-only">Your Name</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="fa fa-address-card-o" aria-hidden="true"/></div>
-            											<input type="text" id="first" className="form-control" tabIndex="25" placeholder="First/Given name" required/>
+            											<input type="text" id="first" className="form-control" tabIndex="25" placeholder="First/Given name"  data-error="A first/given name is required." required/>
             										</div>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="fa fa-address-card-o" aria-hidden="true"/></div>
-            											<input type="text" id="last" className="form-control" tabIndex="30" placeholder="Last/Family name" required/>
+            											<input type="text" id="last" className="form-control" tabIndex="30" placeholder="Last/Family name" data-error="A last/family name is required." required/>
             										</div>
-													<div className="help-block with-errors"></div>
+													<span className="help-block with-errors"></span>
             									</div>
             									<div className="form-group">
             										<p htmlFor="user-name" className="sr-only">User Name</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-user" aria-hidden="true"/></div>
-            											<input type="text" id="username" className="form-control" tabIndex="35" placeholder="User name" required/>
+            											<input type="text" id="username" className="form-control" tabIndex="35" placeholder="User name" data-error="A user name is required." required/>
             										</div>
-													<div className="help-block with-errors"></div>
+													<span className="help-block with-errors"></span>
             									</div>
             									<div className="form-group">
             										<p htmlFor="organisation" className="sr-only">Organisation Name</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="fa fa-building" aria-hidden="true"/></div>
-            											<input type="text" id="organisation" className="form-control" tabIndex="40" placeholder="Organisation name"/>
+            											<input type="text" id="organisation" className="form-control" tabIndex="40" placeholder="Organisation name (optional)"/>
             										</div>
             									</div>
             									<div className="form-group input-block-ico">
             										<p htmlFor="email" className="sr-only">Email address</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-envelope" aria-hidden="true"/></div>
-            											<input type="email" id="email" className="form-control" tabIndex="45" placeholder="E-mail" data-error="The e-mail is not valid." required/>
+            											<input type="email" id="email" pattern={rfc5322} className="form-control" tabIndex="45" placeholder="E-mail" data-error="A valid e-mail is required." required/>
             										</div>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-envelope" aria-hidden="true"/></div>
-            											<input type="email" id="email2" className="form-control" tabIndex="50" placeholder="Validate e-mail" data-error="The e-mail is not valid." data-match="#email" data-match-error="The e-mails do not match." required/>
+            											<input type="email" id="email2" pattern={rfc5322} className="form-control" tabIndex="50" placeholder="Validate e-mail" data-error="A confirmation e-mail is required." data-match="#email" data-match-error="The e-mails do not match." required/>
             										</div>
-													<div className="help-block with-errors"></div>
+													<span className="help-block with-errors"></span>
             									</div>
             									<div className="form-group input-block-ico">
             										<p htmlFor="password" className="sr-only">Password</p>
-            										<div className="input-group">
+            										<div className="input-group" data-toggle="tooltip" title="Password must contain one or more upper case, lower case, number/special characters and be at least 8 characters long to be valid.">
             											<div className="input-group-addon login-name-addon"><span className="fa fa-key" aria-hidden="true"/></div>
-            											<input type="password" id="password" className="form-control" tabIndex="55" placeholder="Password" required/>
+            											<input type="password" id="password" pattern={passwordPattern} className="form-control" tabIndex="55" placeholder="Password" data-error="A valid password is required." required/>
             										</div>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="fa fa-key" aria-hidden="true"/></div>
-            											<input type="password" id="password2" className="form-control" tabIndex="60" placeholder="Validate password" data-match="#password" data-match-error="The passwords do not match." required/>
+            											<input type="password" id="password2" pattern={passwordPattern} className="form-control" tabIndex="60" placeholder="Validate password" data-error="A confirmation password is required." data-match="#password" data-match-error="The passwords do not match." required/>
             										</div>
-													<div className="help-block with-errors"></div>
+													<span className="help-block with-errors"></span>
             									</div>
             									<div className="form-group">
             										<input type="checkbox" id="terms" tabIndex="70" data-error="You need to read and agree to the terms and conditions." required/> I agree to the <a id="termsLink">terms and conditions.</a>
-													<div className="help-block with-errors"></div>
+													<span className="help-block with-errors"></span>
 												</div>
 												<div className="form-group">
             										<input type="checkbox" id="privacy" tabIndex="75" data-error="You need to read agree to the privacy policy." required/> I agree to the <a id="privacyLink">privacy policy.</a>
-													<div className="help-block with-errors"></div>
+													<span className="help-block with-errors"></span>
             									</div>
             									<div className="form-group">
             										<button className="btn btn-primary btn-block" type="submit" id="signup" tabIndex="80">Sign up</button>
@@ -255,9 +297,9 @@ define(['react', 'reactDom', 'itView'],
             										<p htmlFor="forgot-name" className="sr-only">User name</p>
             										<div className="input-group">
             											<div className="input-group-addon login-name-addon"><span className="glyphicon glyphicon-user" aria-hidden="true"/></div>
-            											<input type="text" id="forgot-name" className="form-control" tabIndex="90" placeholder="User name" required/>
+            											<input type="text" id="forgot-name" className="form-control" tabIndex="90" placeholder="User name"  data-error="A user name is required." required/>
             										</div>
-													<div className="help-block with-errors"></div>
+													<span className="help-block with-errors"></span>
             									</div>
             									<div className="form-group">
             										<button className="btn btn-primary btn-block" type="button" id="forgot" tabIndex="95">Send e-mail</button>
