@@ -2,7 +2,7 @@
  * Copyright 2017 Initiate Thinking
  * Author: Nigel Daniels
  */
-module.exports = function(mongoose, bcrypt, nodemailer, config) {
+module.exports = function(mongoose, bcrypt) {
 	var SALT_ROUNDS = 10;
 
 	var Role = 	{
@@ -46,44 +46,9 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 							};
 
 	var updatePassword = function(id, newPassword, callback) {
-							log.info('User.changePassword, called');
+							console.log('User - updatePassword, called');
 							User.update({_id: id}, {password: this.generateHash(newPassword)}, callback);
 							};
-
-	// Handle active users forgetting their password
-	var forgotPassword = function(email, resetPasswordUrl, callback) {
-							log.info('User.forgotPassword, called');
-
-							User.findOne({email: email, active: true}, function findAccount(err, user) {
-								if (err) {
-									log.error('User.forgotPassword, Failed to find account');
-									// account is invalid
-									callback(false, 'We could not find an account associated with that email.'); // NLS
-								} else {
-									log.debug('User.forgotPassword, Found account, sending email');
-									var smtpTransport = nodemailer.createTransport(nodemailerSmtp(config.mail));
-									resetPasswordUrl += '/?id=' + user._id;
-
-									smtpTransport.sendMail({
-										from:		'no.reply@axiomode.com',
-										to:			user.email,
-										subject:	'Axiomode Password Request',
-										text:		'Please use this link to reset your password: ' + resetPasswordUrl
-										},
-										function forgotPasswordResult(err) {
-											if (err) {
-												log.error('User.forgotPassword, Error sending email: ' + JSON.stringify(err));
-												callback(false, 'Error sending email: ' + JSON.stringify(err)); // NLS
-											} else {
-												log.info('User.forgotPassword, Success sent email');
-												callback(true, null);
-											}
-									});
-								}
-							});
-						};
-
-
 
 	return 	{
 			User: 			User,
@@ -91,7 +56,6 @@ module.exports = function(mongoose, bcrypt, nodemailer, config) {
 
 			validateRole:	validateRole,
 			generateHash:	generateHash,
-			updatePassword:	updatePassword,
-			forgotPassword:	forgotPassword
+			updatePassword:	updatePassword
 			};
 	};

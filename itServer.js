@@ -45,7 +45,7 @@ var port 			= config.app.devPort;	// The default port for the app
 var shutdown		= false;				// Flag to see if we are shutting down
 var startup			= true;
 
-// Intercept any connections while we are starting up
+// Intercept any connection attempts while we are starting up
 app.use(function (req, res, next) {
 	if (!startup) return next();
 
@@ -94,14 +94,14 @@ app.use(bodyParser.json({			// Stop over stuffing of JSON
 
 //Load the app specific data models
 var models = {
-	User: 			require(__dirname + '/models/User')(mongoose, bcrypt, nodemailer, config),
+	User: 			require(__dirname + '/models/User')(mongoose, bcrypt),
 	};
 
 
 // Load the app specific business logic
 var handlers = {
 	userHandler:			require(__dirname + '/handlers/userHandler')(models.User),
-	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')(models.User)
+	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')(models.User, nodemailer, config.mail)
 	};
 
 
@@ -117,16 +117,41 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-// Load the routes we are going to use
-require(__dirname + '/routes/authentication')(app, handlers, passport);
-require(__dirname + '/routes/users')(app, handlers);
-
 app.set('view engine', 'jsx');
 app.engine('jsx', require('express-react-views').createEngine());
 
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
+
+// Log all of the requests
+if (env === 'development') {
+	app.get('*', function(req, res, next) {
+		console.log('itServer - get, req.url ' + req.url);
+		return next();
+		});
+	app.post('*', function(req, res, next) {
+		console.log('itServer - post, req.url ' + req.url);
+		return next();
+		});
+	app.put('*', function(req, res, next) {
+		console.log('itServer - put, req.url ' + req.url);
+		return next();
+		});
+	app.delete('*', function(req, res, next) {
+		console.log('itServer - del, req.url ' + req.url);
+		return next();
+		});
+	}
+
+// Load the routes we are going to use
+require(__dirname + '/routes/authentication')(app, handlers, passport);
+require(__dirname + '/routes/users')(app, handlers);
+
+// Now define the starting API
+app.get('/', function(req, res) {
+	console.log('itServer - / called, serving index.');
+	res.render('index.jsx'); // removed {layout: false} parameter
+	});
 
 // Capture requests to shotdown and do it cleanly
 process.on('SIGINT', cleanup);
@@ -138,32 +163,6 @@ app.use(function (req, res, next) {
 
 	res.setHeader('Connection', 'close');
 	res.status(503).send('Service is in the process of closing.');
-	});
-
-// Log all of the requests
-if (env === 'development') {
-	app.get('*', function(req, res, next) {
-		console.log('itServer - get, req.url :' + req.url);
-		next();
-		});
-	app.post('*', function(req, res, next) {
-		console.log('itServer - post, req.url :' + req.url);
-		next();
-		});
-	app.put('*', function(req, res, next) {
-		console.log('itServer - put, req.url :' + req.url);
-		next();
-		});
-	app.delete('*', function(req, res, next) {
-		console.log('itServer - del, req.url :' + req.url);
-		next();
-		});
-	}
-
-// Now define the starting API
-app.get('/', function(req, res) {
-	console.log('itServer - / called, serving index.')
-	res.render('index.jsx'); // removed {layout: false} parameter
 	});
 
 

@@ -7,27 +7,21 @@ define(['itRouter'], function(itRouter) {
 //	var router = null;
 
 	var initialize = function() {
-		console.log('itInit initialize, called.');
-        Backbone.history.start();
-
+		console.log('itInit - initialize, called.');
 		$.notifyDefaults({
 			type: 'minimalist'
 			});
 
-        checkLogin(startPage);
+        Backbone.history.start();
         };
 
+	/*
 	var checkLogin = function(callback) {
-		console.log('itInit checkLogin, called.');
-		/* $.ajax("/account/authenticated", {
-			method: 	"GET",
-			success:	function() {
-				return callback(true);
-                },
-			error:		function() {
-				return callback(false);
-                }
-            }); */
+		console.log('itInit - checkLogin, called.');
+		$.get('/authenticate')
+			.done(function() {return callback(true)})
+			.fail(function() {return callback(false)});
+
         return callback(false);
         };
 
@@ -41,6 +35,7 @@ define(['itRouter'], function(itRouter) {
 			window.location.hash = 'index';
             }
         };
+	*/
 
 	return {initialize: initialize};
     });

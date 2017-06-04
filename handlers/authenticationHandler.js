@@ -1,4 +1,4 @@
-module.exports = function(User) {
+module.exports = function(User, nodemailer, mailConfig) {
 
     function signup(req, res) {
         console.log('authenticationHandler - signup, called.');
@@ -106,9 +106,86 @@ module.exports = function(User) {
             }
         }
 
-    function forgotPassword(req, res) {}
+    function forgotPassword(req, res) {
+        console.log('authenticationHandler - forgotPassword, called.');
+        var resetPasswordUrl = 'https://' + req.headers.host + '/reset';
 
-    function changePassword(req, res) {}
+        console.log('authenticationHandler - forgotPassword, finding user.');
+        User.User.findOne({username: req.body.username}, function(err, user) {
+            if (err) {
+                console.log('authenticationHandler - forgotPassword, finding user err: ' + err.message);
+                res.status(500).send({message: 'Error finding user, message: ' + err.message});
+                return;
+                }
+
+            if (user) {
+                console.log('authenticationHandler - forgotPassword, found user.');
+                resetPasswordUrl += '/?id=' + user._id;
+
+                console.log('authenticationHandler - forgotPassword, creating smtpTransport.');
+                var smtpTransport = nodemailer.createTransport(mailConfig);
+
+                var mailOpts =  {
+                                from:		'no.reply@initiatethinking.com',
+                                to:			user.email,
+                                subject:	'Initiate Thinking Demo App - Password Request',
+                                text:		'Please use this link to reset your password: ' + resetPasswordUrl
+                                };
+
+                console.log('authenticationHandler - forgotPassword, sending email.');
+                smtpTransport.sendMail(mailOpts, function(err, info) {
+                    if (err) {
+                        res.status(500).send({message: 'Error sending e-mail: ' + err.message}); // NLS
+                        return;
+                        }
+
+                    console.log('authenticationHandler - forgotPassword, email sent ok.');
+                    res.sendStatus(200);
+                    return;
+                    });
+            } else {
+                console.log('authenticationHandler - forgotPassword, user ' + req.body.username + ' not found');
+                res.status(404).send({message: 'That user could not be found.'});
+                return;
+                }
+            });
+        }
+
+    function getResetPage(req, res) {
+        console.log('authenticationHandler - getResetPage, called');
+		console.log('authenticationHandler - getResetPage, id: ' + req.query.id);
+        res.redirect('/#reset/' + req.query.id);
+        }
+
+    function resetPassword(req, res) {
+        console.log('authenticationHandler - resetPassword, called.');
+        User.User.findById(req.body.id, function(err, user) {
+            if (err) {
+                res.status(500).send('Error finding user, message: ' + err.message);
+                return;
+            } else {
+                if (user) {
+                    if (req.body.password) {
+                        User.updatePassword(user._id, req.body.password, function(err) {
+                            if (err) {
+                                res.status(500).send('Error updating password, message: ' + err.message);
+                                return;
+                                }
+
+                            res.sendStatus(200);
+                            return;
+                            });
+                    } else {
+                        res.status(400).send('No password provided.');
+                        return;
+                        }
+                } else {
+                    res.status(404).send('The user requested was not found.');
+                    return;
+                    }
+                }
+            });
+        }
 
     function logout(req, res) {
         console.log('authenticationHandler - authenticate, called.');
@@ -118,18 +195,19 @@ module.exports = function(User) {
         }
 
     function isAuthenticated(req, res, next) {
-            console.log('authenticationHandler - isAuthenticated, called.');
-            if (req.isAuthenticated()) {return next();}
-            res.redirect('/');
-            };
+        console.log('authenticationHandler - isAuthenticated, called.');
+        if (req.isAuthenticated()) {return next();}
+        res.redirect('/');
+        }
 
     return {
         signup:             signup,
         login:              login,
         authenticate:       authenticate,
         forgotPassword:     forgotPassword,
-        changePassword:     changePassword,
+        getResetPage:       getResetPage,
+        resetPassword:      resetPassword,
         logout:             logout,
         isAuthenticated:    isAuthenticated
-        }
+        };
     };

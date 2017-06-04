@@ -10,6 +10,8 @@ define(['react', 'reactDom', 'itView'],
 
             el:				$('#main'),
 
+			requireLogin: 	false,
+
 			signup:			function(event) {
 								console.log('LoginView - signup, called');
 								console.log('username: ' + $('#username').val());
@@ -87,11 +89,11 @@ define(['react', 'reactDom', 'itView'],
 											$('#login-name').focus();
 										})
 										.fail(function(err) {
-											console.log('LoginView - login, error: ' + err.responseText);
+											console.log('LoginView - forgot, error: ' + JSON.stringify(err));
 											$.notify({
-												title: '<strong>Login Error</strong>',
+												title: '<strong>Forgot Password Error</strong>',
 												icon: 'glyphicon glyphicon-warning-sign',
-												message: err.responseText
+												message: err.message
 												},{
 												type: 'danger'
 												});
@@ -168,13 +170,16 @@ define(['react', 'reactDom', 'itView'],
 
 
 		    render() {
+
 				var passwordPattern = "(?=^.{8,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$";
+
 				var rfc5322 = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\" +
 							"x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9]" +
 							"(?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]" +
 							"[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]" +
 							")|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\" +
-							"x0b\\x0c\\x0e-\\x7f])+)\\])"
+							"x0b\\x0c\\x0e-\\x7f])+)\\])";
+
 		        return (
                     <div className="container-fluid">
             			<div className="row">
@@ -302,7 +307,7 @@ define(['react', 'reactDom', 'itView'],
 													<span className="help-block with-errors"></span>
             									</div>
             									<div className="form-group">
-            										<button className="btn btn-primary btn-block" type="button" id="forgot" tabIndex="95">Send e-mail</button>
+            										<button className="btn btn-primary btn-block" type="submit" id="forgot" tabIndex="95">Send e-mail</button>
 													<button className="btn btn-block" type="button" id="forgot-login" onClick={this.handleAction}tabIndex="100">Back to Login</button>
             									</div>
             								</form>
