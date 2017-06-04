@@ -13,7 +13,7 @@ var https			= require('https');
 var session			= require('express-session');
 var request			= require('request-json');
 var bodyParser 		= require('body-parser');
-var cookieParser 	= require('cookie-parser');
+//var cookieParser 	= require('cookie-parser');
 var favicon 		= require('serve-favicon');
 
 // Persistence dependanices
@@ -30,9 +30,10 @@ var nodemailer		= require('nodemailer');
 
 // Load configuration files
 var config = {
-	app:	require(__dirname + '/config/app'),
-	db:		require(__dirname + '/config/db'),
-	mail:	require(__dirname + '/config/mail')
+	app:		require(__dirname + '/config/app'),
+	db:			require(__dirname + '/config/db'),
+	mail:		require(__dirname + '/config/mail'),
+	session:	require(__dirname + '/config/session')
 	};
 
 // Set the environment setting we are using
@@ -83,7 +84,7 @@ mongoose.connect(dbURI);/*, function onMongooseError(err) {
 
 // Now configure the application
 app.use(favicon(__dirname + '/images/favicon.ico'));
-app.use(cookieParser());			// Read cookies (needed for auth)
+//app.use(cookieParser());			// Read cookies (needed for auth)
 app.use(bodyParser.urlencoded({		// Needed for html forms
 	limit: config.app.urlEncodeMax, extended: false
 	}));
@@ -109,11 +110,7 @@ var handlers = {
 config.passport = require(__dirname + '/config/passport')(passport, passportLocal, models.User);
 
 // configure the stuff for passport auth
-app.use(session({
-	secret:				config.app.sessionKey,
-	resave:				true,
-	saveUninitialized:	false
-	}));
+app.use(session(config.session));
 app.use(passport.initialize());
 app.use(passport.session());
 
