@@ -1,6 +1,7 @@
 /**
  * Copyright  2017 Initiate Thinking
  * Author: Nigel Daniels
+ * MIT Licensed
  */
 define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/action3/models/Action3Model'],
 

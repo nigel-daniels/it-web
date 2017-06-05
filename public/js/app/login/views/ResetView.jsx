@@ -1,6 +1,7 @@
 /**
  * Copyright  2017 Initiate Thinking
  * Author: Nigel Daniels
+ * MIT Licensed
  */
 define(['react', 'reactDom'],
 
@@ -15,7 +16,7 @@ define(['react', 'reactDom'],
 			reset:			function(event) {
 									console.log('ResetView - reset, called');
 									console.log('ResetView - reset, id: ' + this.id);
-									
+
 									$.post('/reset', {
 										id:	this.id,
 										password: $('#password').val()

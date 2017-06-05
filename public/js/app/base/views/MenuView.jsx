@@ -1,6 +1,7 @@
 /**
  * Copyright  2017 Asterion Inc.
  * Author: Nigel Daniels
+ * MIT Licensed
  */
 define(['react', 'reactDom'], function(React, ReactDOM) {
     class MenuView extends React.Component {

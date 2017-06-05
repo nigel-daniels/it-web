@@ -1,6 +1,7 @@
 /**
  * Copyright 2017 Initiate Thinking
  * Author: Nigel Daniels
+ * MIT Licensed
  */
 module.exports = function(mongoose, bcrypt) {
 	var SALT_ROUNDS = 10;

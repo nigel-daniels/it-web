@@ -1,6 +1,7 @@
 /**
  * Copyright 2015 Initiate Thinking Limited
  * Author: Nigel Daniels
+ * MIT Licensed
  */
 var React = require('react');
 

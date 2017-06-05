@@ -1,6 +1,7 @@
 /**
  * Copyright 2017 Initiate Thinking
  * Author: Nigel Daniels
+ * MIT Licensed
  */
 define(['jsx!app/login/views/LoginView', 'jsx!app/login/views/ResetView',
 	'jsx!app/index/views/IndexView', 'jsx!app/action1/views/Action1View',
