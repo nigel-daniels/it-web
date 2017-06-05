@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2017 Initiate Thinking
+ * Author: Nigel Daniels
+ * MIT Licensed
+ */
 module.exports = function(User, nodemailer, mailConfig) {
 
     function signup(req, res) {

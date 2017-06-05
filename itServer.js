@@ -1,6 +1,7 @@
 /**
  * Copyright 2017 Initiate Thinking
  * Author: Nigel Daniels
+ * MIT Licensed
  */
 
 // express and middleware dependencies.
@@ -13,7 +14,6 @@ var https			= require('https');
 var session			= require('express-session');
 var request			= require('request-json');
 var bodyParser 		= require('body-parser');
-//var cookieParser 	= require('cookie-parser');
 var favicon 		= require('serve-favicon');
 
 // Persistence dependanices
@@ -44,7 +44,7 @@ var dbURI = !process.env.MONGO_URL ? config.db.mongourl : process.env.MONGO_URL;
 var app 			= express();			// This app
 var port 			= config.app.devPort;	// The default port for the app
 var shutdown		= false;				// Flag to see if we are shutting down
-var startup			= true;
+var startup			= true;					// Flag to show we are starting up
 
 // Intercept any connection attempts while we are starting up
 app.use(function (req, res, next) {

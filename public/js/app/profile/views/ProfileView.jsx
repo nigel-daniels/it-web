@@ -1,6 +1,7 @@
 /**
  * Copyright  2017 Initiate Thinking
  * Author: Nigel Daniels
+ * MIT Licensed
  */
 define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/profile/models/ProfileModel'],
 
@@ -29,7 +30,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/profi
 					<div>
 						<MenuView/>
 						<div className='content'>
-							<h1 className="page-header">{heading}</h1>
+							<h1 className="page-header">Profile Page</h1>
 							<div className="lead">{content}</div>
 						</div>
 					</div>
