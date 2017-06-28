@@ -28,6 +28,9 @@ var bcrypt			= require('bcrypt-nodejs');
 // Email dependancies
 var nodemailer		= require('nodemailer');
 
+// utility dependancies
+var parallel			= require('async/parallel');
+
 // Load configuration files
 var config = {
 	app:		require(__dirname + '/config/app'),
@@ -101,7 +104,7 @@ var models = {
 
 // Load the app specific business logic
 var handlers = {
-	userHandler:			require(__dirname + '/handlers/userHandler')(models.User),
+	userHandler:			require(__dirname + '/handlers/userHandler')(models.User, parallel),
 	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')(models.User, nodemailer, config.mail)
 	};
 
@@ -140,15 +143,15 @@ if (env === 'development') {
 		});
 	}
 
-// Load the routes we are going to use
-require(__dirname + '/routes/authentication')(app, handlers, passport);
-require(__dirname + '/routes/users')(app, handlers);
-
 // Now define the starting API
 app.get('/', function(req, res) {
 	console.log('itServer - / called, serving index.');
 	res.render('index.jsx'); // removed {layout: false} parameter
 	});
+
+// Load the routes we are going to use
+require(__dirname + '/routes/authentication')(app, handlers, passport);
+require(__dirname + '/routes/users')(app, handlers);
 
 // Capture requests to shotdown and do it cleanly
 process.on('SIGINT', cleanup);

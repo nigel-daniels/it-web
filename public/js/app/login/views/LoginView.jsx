@@ -49,6 +49,7 @@ define(['react', 'reactDom', 'itView'],
 									password: $('#login-password').val()
 									})
 									.done(function() {
+										console.log('LoginView - login, login ok! switch to index view.');
 										window.location.hash = 'index';
 									})
 									.fail(function(err) {
@@ -60,7 +61,7 @@ define(['react', 'reactDom', 'itView'],
 												message: 'The user name or password was incorrect.'
 												});
 										} else {
-											console.log('LoginView - login, error: ' + err.responseText);
+											console.log('LoginView - login, error: ' + JSON.stringify(err));
 											$.notify({
 												title: '<strong>Login Error</strong>',
 												icon: 'glyphicon glyphicon-warning-sign',

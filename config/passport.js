@@ -32,7 +32,9 @@ module.exports = function(passport, passportLocal, User) {
 				if (err) {return done(err);}
 
 				if (user) {
+					console.log('passport - local, user found, checking password.');
 					if (user.validatePassword(password)) {
+						console.log('passport - local, password ok, logged in.');
 						return done(null, user);
 					} else {
 						console.log('passport - local, Password provided was incorrect.');

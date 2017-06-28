@@ -11,12 +11,14 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/actio
 
             el:				$('#main'),
 
-			initialize:		function() {
+			initialize:		function(options) {
 								this.model = new Action1Model();
+								this.user = options.user;
+								this.listenTo(this.user, 'update sort sync', this.render);
 								},
 
             render:         function() {
-                                ReactDOM.render(<Action1 actionModel={this.model.toJSON()}/>, this.el);
+                                ReactDOM.render(<Action1 user={this.user.toJSON()} actionModel={this.model.toJSON()}/>, this.el);
                                 }
 			});
 
@@ -28,7 +30,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/actio
 
 		        return (
 					<div>
-						<MenuView/>
+						<MenuView user={this.props.user}/>
 						<div className='content'>
 							<h1 className="page-header">{heading}</h1>
 							<div className="lead">{content}</div>

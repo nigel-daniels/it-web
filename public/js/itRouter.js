@@ -6,11 +6,11 @@
 define(['jsx!app/login/views/LoginView', 'jsx!app/login/views/ResetView',
 	'jsx!app/index/views/IndexView', 'jsx!app/action1/views/Action1View',
 	'jsx!app/action2/views/Action2View', 'jsx!app/action3/views/Action3View',
-	'jsx!app/profile/views/ProfileView', 'jsx!app/admin/views/AdminView'],
+	'jsx!app/profile/views/ProfileView', 'jsx!app/admin/views/AdminView', 'models/User'],
 
 	function(LoginView, ResetView, IndexView,
 			Action1View, Action2View, Action3View,
-			ProfileView, AdminView) {
+			ProfileView, AdminView, User) {
 		var itRouter = Backbone.Router.extend({
 			currentView: 	null,
 
@@ -33,16 +33,16 @@ define(['jsx!app/login/views/LoginView', 'jsx!app/login/views/ResetView',
 								if (view.requireLogin) {
 									this.checkLogin(function(authenticated) {
 										if (!authenticated) {
-											console.log('itRouter - changeView, auth bad going to login');
+											console.log('itRouter - changeView, auth bad redirect to login.');
 											window.location.hash = 'login';
 											return;
 										} else {
-											console.log('itRouter - changeView, auth bad going to view');
+											console.log('itRouter - changeView, auth ok going to view requested.');
 											_this.completeChange(view);
 											}
 										});
 									} else {
-										console.log('itRouter - changeView, no auth going to view');
+										console.log('itRouter - changeView, no auth requested, going to view');
 										_this.completeChange(view);
 										}
 								},
@@ -84,32 +84,43 @@ define(['jsx!app/login/views/LoginView', 'jsx!app/login/views/ResetView',
 
 			index: 			function() {
 								console.log('itRouter - index, called.');
-								this.changeView(new IndexView());
+
+								var _this = this;
+
+								$.get('/authenticate')
+									.done(function() {
+										_this.user = new User();
+										_this.user.fetch();
+										_this.changeView(new IndexView({user: _this.user}));
+										})
+									.fail(function() {
+										_this.changeView(new IndexView({user: {role: 0}}));
+										});
 								},
 
 			action1:		function() {
 								console.log('itRouter - action1 called.');
-								this.changeView(new Action1View());
+								this.changeView(new Action1View({user: this.user}));
 								},
 
 			action2:		function() {
 								console.log('itRouter - action2 called.');
-								this.changeView(new Action2View());
+								this.changeView(new Action2View({user: this.user}));
 								},
 
 			action3:		function() {
 								console.log('itRouter - action3 called.');
-								this.changeView(new Action3View());
+								this.changeView(new Action3View({user: this.user}));
 								},
 
 			profile:		function() {
 								console.log('itRouter - profile called.');
-								this.changeView(new ProfileView());
+								this.changeView(new ProfileView({user: this.user}));
 								},
 
 			admin:		function() {
 								console.log('itRouter - admin called.');
-								this.changeView(new AdminView());
+								this.changeView(new AdminView({user: this.user}));
 								}
 			});
 

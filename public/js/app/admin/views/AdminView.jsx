@@ -11,12 +11,14 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/admin
 
             el:				$('#main'),
 
-			initialize:		function() {
+			initialize:		function(options) {
 								this.model = new AdminModel();
+								this.user = options.user;
+								this.listenTo(this.user, 'update sort sync', this.render);
 								},
 
             render:         function() {
-                                ReactDOM.render(<Admin adminModel={this.model.toJSON()}/>, this.el);
+                                ReactDOM.render(<Admin user={this.user.toJSON()} adminModel={this.model.toJSON()}/>, this.el);
                                 }
 			});
 
@@ -28,7 +30,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/admin
 
 		        return (
 					<div>
-						<MenuView/>
+						<MenuView user={this.props.user}/>
 						<div className='content'>
 							<h1 className="page-header">{heading}</h1>
 							<div className="lead">{content}</div>

@@ -3,8 +3,26 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['react', 'reactDom'], function(React, ReactDOM) {
+define(['react', 'reactDom', 'models/User'], function(React, ReactDOM, User) {
     class MenuView extends React.Component {
+
+        userMenu(role) {
+            if (role === 1) {
+                return (<ul className="dropdown-menu">
+                            <li><a href="#profile">Profile</a></li>
+                            <li role="separator" className="divider"></li>
+                            <li><a href="#admin">Administer</a></li>
+                            <li role="separator" className="divider"></li>
+                            <li><a href="logout">Logout</a></li>
+                        </ul>);
+            } else {
+                return (<ul className="dropdown-menu">
+                            <li><a href="#profile">Profile</a></li>
+                            <li role="separator" className="divider"></li>
+                            <li><a href="logout">Logout</a></li>
+                        </ul>);
+                }
+            }
 
         render() {
 			return (
@@ -33,13 +51,7 @@ define(['react', 'reactDom'], function(React, ReactDOM) {
                                         <span className="glyphicon glyphicon-user" aria-hidden="true"></span>
                                         <span className="caret"></span>
                                     </a>
-                                    <ul className="dropdown-menu">
-                                        <li><a href="#profile">Profile</a></li>
-                                        <li role="separator" className="divider"></li>
-                                        <li><a href="#admin">Administer</a></li>
-                                        <li role="separator" className="divider"></li>
-                                        <li><a href="logout">Logout</a></li>
-                                    </ul>
+                                    {this.userMenu(this.props.user.role)}
                                 </li>
                             </ul>
                         </div>

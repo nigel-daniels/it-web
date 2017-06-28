@@ -10,7 +10,7 @@ define(function(require) {
 				};
 
 		var User = Backbone.Model.extend({
-			urlRoot: 		'/asset',
+			urlRoot: 		'/user',
 
 			idAttribute: 	'_id',
 

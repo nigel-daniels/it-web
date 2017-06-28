@@ -41,6 +41,10 @@
   border-bottom-right-radius: 4px;
 }
 
+.tab-pane {
+  padding-top: 25px;
+}
+
 /*
  * Notification styling
  */
@@ -137,6 +141,19 @@
   padding-top: 50px;
 }
 
+@media (min-width: 768px) {
+  .content {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+}
 
 /*
  * Menu View
@@ -155,11 +172,4 @@
   position: absolute;
   width: 100%;
   bottom: 0;
-}
-
-@media (min-width: 768px) {
-  .content {
-    padding-right: 40px;
-    padding-left: 40px;
-  }
 }

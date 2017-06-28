@@ -193,7 +193,7 @@ module.exports = function(User, nodemailer, mailConfig) {
         }
 
     function logout(req, res) {
-        console.log('authenticationHandler - authenticate, called.');
+        console.log('authenticationHandler - logout, called.');
 		req.session.destroy();
 		req.logout();
 		res.redirect('/#login');
@@ -201,7 +201,12 @@ module.exports = function(User, nodemailer, mailConfig) {
 
     function isAuthenticated(req, res, next) {
         console.log('authenticationHandler - isAuthenticated, called.');
-        if (req.isAuthenticated()) {return next();}
+        if (req.isAuthenticated()) {
+            console.log('authenticationHandler - isAuthenticated, ok.');
+            return next();
+            }
+
+        console.log('authenticationHandler - isAuthenticated, not ok.');
         res.redirect('/');
         }
 

@@ -5,9 +5,8 @@
  */
 define(['itRouter'], function(itRouter) {
 
-//	var router = null;
-
 	var initialize = function() {
+
 		console.log('itInit - initialize, called.');
 		$.notifyDefaults({
 			type: 'minimalist'
@@ -16,8 +15,8 @@ define(['itRouter'], function(itRouter) {
         Backbone.history.start();
         };
 
-	/*
-	var checkLogin = function(callback) {
+
+	/*var checkLogin = function(callback) {
 		console.log('itInit - checkLogin, called.');
 		$.get('/authenticate')
 			.done(function() {return callback(true)})
@@ -26,17 +25,18 @@ define(['itRouter'], function(itRouter) {
         return callback(false);
         };
 
-    var startPage = function(authenticated) {
-		console.log('itInit runApplication, called, authenticated? ' + authenticated);
-		if (!authenticated) {
-			console.log('itInit runApplication, going to login');
-			window.location.hash = 'login';
-		} else {
-			console.log('itInit runApplication, going to index');
-			window.location.hash = 'index';
-            }
-        };
-	*/
+    var applicationStart = function(authenticated) {
+		console.log('itInit - validateRequest, called.');
+		if (window.location.hash !== 'reset') {
+			if (!authenticated) {
+				console.log('itInit - validateRequest, not authenticated redirect to login');
+				window.location.hash = 'login';
+				}
+			}
+
+		Backbone.history.start();
+	};*/
+
 
 	return {initialize: initialize};
     });

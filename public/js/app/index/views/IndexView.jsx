@@ -7,13 +7,18 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 
 	function(React, ReactDOM, itView, MenuView) {
 
-		var indexView = itView.extend({
+		var IndexView = itView.extend({
 
             el:				$('#main'),
 
-            render:         function() {
-                                ReactDOM.render(<Index/>, this.el);
+			initialize:		function(options) {
+								this.user = options.user;
+								this.listenTo(this.user, 'update sort sync', this.render);
+								},
 
+            render:         function() {
+								console.log('IndexView - render, user: ' + JSON.stringify(this.user));
+                                ReactDOM.render(<Index user={this.user.toJSON()}/>, this.el);
                                 }
 			});
 
@@ -22,7 +27,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 		    render() {
 		        return (
 					<div>
-						<MenuView/>
+						<MenuView user={this.props.user}/>
 						<div className="content">
 							<div id="index-img">
 								<img alt="Initiate Thinking Logo" src="media/images/LogoLong.png" height="50%" width="50%"/>
@@ -33,5 +38,5 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 				}
 			};
 
-	return indexView;
+	return IndexView;
 	});
