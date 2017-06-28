@@ -114,6 +114,7 @@ define(['react', 'reactDom', 'itView'],
 								$('#login-form').validator()
 									.on('submit', function (event) {
   										if (!event.isDefaultPrevented()) {
+											event.preventDefault();  // Stop us from navigating away b4 request is done
 											_this.login(event);
   											}
 										})
@@ -122,6 +123,7 @@ define(['react', 'reactDom', 'itView'],
 								$('#signup-form').validator()
 									.on('submit', function (event) {
 	  									if (!event.isDefaultPrevented()) {
+											event.preventDefault();
 											_this.signup(event);
 	  										}
 										})
@@ -130,6 +132,7 @@ define(['react', 'reactDom', 'itView'],
 								$('#forgot-form').validator()
 									.on('submit', function (event) {
 	  									if (!event.isDefaultPrevented()) {
+											event.preventDefault();
 											_this.forgot(event);
 	  										}
 										})

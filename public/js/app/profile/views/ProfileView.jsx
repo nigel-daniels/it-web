@@ -13,6 +13,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 
 
 			initialize:		function(options) {
+								console.log('ProfileView - initilialize, options.user: ' + JSON.stringify(options.user));
 								this.user = options.user;
 								this.listenTo(this.user, 'update sort sync', this.render);
 								},
@@ -60,6 +61,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 								$('#profile-form').validator()
 									.on('submit', function (event) {
   										if (!event.isDefaultPrevented()) {
+											event.preventDefault();
 											_this.profileUpdate(event);
   											}
 										})
@@ -68,6 +70,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 								$('#password-form').validator()
 									.on('submit', function (event) {
   										if (!event.isDefaultPrevented()) {
+											event.preventDefault();
 											_this.passwordReset(event);
   											}
 										})

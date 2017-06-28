@@ -174,7 +174,7 @@ var certificate = fs.readFileSync(__dirname + '/config/it-test-crt.crt');
 // Finally start the server
 https.createServer({key: privateKey, cert: certificate}, app).listen(port, function(){
 	startup = false;
-	console.log('IT Demo App, listening on port ' + port);
+	console.log('IT Demo App, listening on port ' + port + ', environment is ' + env);
 	});
 
 
