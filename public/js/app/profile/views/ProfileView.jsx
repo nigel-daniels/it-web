@@ -51,7 +51,28 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 								},
 
 			passwordReset:	function(event) {
-
+							$.post('/reset', {
+								id:	this.user.id,
+								password: $('#password').val()
+								})
+								.done(function() {
+									$.notify({
+										title: '<strong>Reset password</strong>',
+										icon: 'fa fa-lock',
+										message: 'Your password has been reset.'
+										});
+									$('#reset-login').removeClass('disabled');
+								})
+								.fail(function(err) {
+									console.log('LoginView - forgot, error: ' + err.message);
+									$.notify({
+										title: '<strong>Forgot Password Error</strong>',
+										icon: 'glyphicon glyphicon-warning-sign',
+										message: err.message
+										},{
+										type: 'danger'
+										});
+									});
 								},
 
             render:         function() {

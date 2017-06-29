@@ -19,6 +19,7 @@ require.config({
         text:               'node_modules/requirejs-text/text',
         notify:             'node_modules/bootstrap-notify/bootstrap-notify',
         validator:          'node_modules/bootstrap-validator/dist/validator',
+        modal:              'node_modules/backbone-bootstrap-widgets/src/backbone-modal',
 
         app:                'app',
         media:              '../media',
@@ -55,11 +56,15 @@ require.config({
                         deps:       ['jquery']
                         },
         validator:      {
-                        deps:      ['jquery', 'bootstrap']
+                        deps:       ['jquery', 'bootstrap']
+                        },
+        modal:          {
+                        deps:       ['backbone']
                         },
         itInit:         {
                         deps: 	['bootstrap', 'ie10workaround', 'backbone',
-                                'react', 'reactDom', 'jsx', 'notify', 'validator']
+                                'react', 'reactDom', 'jsx', 'notify',
+                                'validator', 'modal']
                         }
         },
 
