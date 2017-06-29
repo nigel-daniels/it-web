@@ -71,10 +71,10 @@ module.exports = function(grunt) {
   											}
 										},
 								files:	[
-										{expand: true, cwd: '<%= jsxPath %>/app/', src: ['**'], dest: '<%= buildPath %>/<%= appPath %>/js/'},
+										{expand: true, cwd: '<%= jsxPath %>/views/', src: ['**'], dest: '<%= buildPath %>/<%= appPath %>/js/'},
 										{expand: true, cwd: '<%= appPath %>/js/', src: ['*.js'], dest: '<%= buildPath %>/<%= appPath %>/js/'},
 										{expand: true, cwd: '<%= appPath %>/js/node_modules/', src: ['**'], dest: '<%= buildPath %>/<%= appPath %>/js/node_modules/'},
-										{expand: true, cwd: '<%= appPath %>/js/app/', src: ['**/*.js'], dest: '<%= buildPath %>/<%= appPath %>/js/app/'},
+										{expand: true, cwd: '<%= appPath %>/js/views/', src: ['**/*.js'], dest: '<%= buildPath %>/<%= appPath %>/js/views/'},
 										{expand: true, cwd: '<%= appPath %>/js/models/', src: ['**/*.js'], dest: '<%= buildPath %>/<%= appPath %>/js/models/'},
 										{expand: true, cwd: '<%= appPath %>/css/', src: ['*'], dest: '<%= buildPath %>/<%= appPath %>/css/'}
 								      	]

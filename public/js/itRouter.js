@@ -3,10 +3,10 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['jsx!app/login/views/LoginView', 'jsx!app/login/views/ResetView',
-	'jsx!app/index/views/IndexView', 'jsx!app/action1/views/Action1View',
-	'jsx!app/action2/views/Action2View', 'jsx!app/action3/views/Action3View',
-	'jsx!app/profile/views/ProfileView', 'jsx!app/admin/views/AdminView', 'models/User'],
+define(['jsx!views/login/LoginView', 'jsx!views/login/ResetView',
+	'jsx!views/index/IndexView', 'jsx!views/action1/Action1View',
+	'jsx!views/action2/Action2View', 'jsx!views/action3/Action3View',
+	'jsx!views/profile/ProfileView', 'jsx!views/admin/AdminView', 'models/User'],
 
 	function(LoginView, ResetView, IndexView,
 			Action1View, Action2View, Action3View,

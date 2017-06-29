@@ -3,7 +3,7 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/action1/models/Action1Model'],
+define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'models/Action1Model'],
 
 	function(React, ReactDOM, itView, MenuView, Action1Model) {
 

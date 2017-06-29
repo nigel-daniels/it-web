@@ -3,30 +3,30 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/action2/models/Action2Model'],
+define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'models/AdminModel'],
 
-	function(React, ReactDOM, itView, MenuView, Action2Model) {
+	function(React, ReactDOM, itView, MenuView, AdminModel) {
 
-		var action2View = itView.extend({
+		var adminView = itView.extend({
 
             el:				$('#main'),
 
 			initialize:		function(options) {
-								this.model = new Action2Model();
+								this.model = new AdminModel();
 								this.user = options.user;
 								this.listenTo(this.user, 'update sort sync', this.render);
 								},
 
             render:         function() {
-                                ReactDOM.render(<Action2  user={this.user.toJSON()} actionModel={this.model.toJSON()}/>, this.el);
+                                ReactDOM.render(<Admin user={this.user.toJSON()} adminModel={this.model.toJSON()}/>, this.el);
                                 }
 			});
 
 
-		class Action2 extends React.Component{
+		class Admin extends React.Component{
 		    render() {
-				var heading = this.props.actionModel.heading;
-				var content = this.props.actionModel.content;
+				var heading = this.props.adminModel.heading;
+				var content = this.props.adminModel.content;
 
 		        return (
 					<div>
@@ -40,5 +40,5 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView', 'app/actio
 				}
 			};
 
-	return action2View;
+	return adminView;
 	});
