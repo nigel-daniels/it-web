@@ -13,7 +13,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 
 
 			initialize:		function(options) {
-								console.log('ProfileView - initilialize, options.user: ' + JSON.stringify(options.user));
+								//console.log('ProfileView - initilialize, options.user: ' + JSON.stringify(options.user));
 								this.user = options.user;
 								this.listenTo(this.user, 'update sort sync', this.render);
 								},
@@ -30,7 +30,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 									},{
 									dataType: 	'text',
 									success:	function(model, response) {
-										console.log('ProfileView - profileUpdate, success response: ' + JSON.stringify(response));
+										//console.log('ProfileView - profileUpdate, success response: ' + JSON.stringify(response));
 										$.notify({
 											title: 		'<strong>Done</strong>',
 											icon: 		'glyphicon glyphicon-ok',
@@ -38,7 +38,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 											});
 										},
 									error:		function(model, response) {
-										console.log('ProfileView - profileUpdate, error response: ' + JSON.stringify(response));
+										//console.log('ProfileView - profileUpdate, error response: ' + JSON.stringify(response));
 										$.notify({
 											title: 		'<strong>Update Error</strong>',
 											icon:		'glyphicon glyphicon-warning-sign',
@@ -64,7 +64,7 @@ define(['react', 'reactDom', 'itView', 'jsx!app/base/views/MenuView'],
 									$('#reset-login').removeClass('disabled');
 								})
 								.fail(function(err) {
-									console.log('LoginView - forgot, error: ' + err.message);
+									//console.log('LoginView - forgot, error: ' + err.message);
 									$.notify({
 										title: '<strong>Forgot Password Error</strong>',
 										icon: 'glyphicon glyphicon-warning-sign',
