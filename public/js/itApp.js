@@ -21,9 +21,6 @@ require.config({
         validator:          'node_modules/bootstrap-validator/dist/validator',
         modal:              'node_modules/backbone-bootstrap-widgets/src/backbone-modal',
 
-        app:                'app',
-        media:              '../media',
-
         itView:             'itView'
         },
 

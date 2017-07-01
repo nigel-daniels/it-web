@@ -3,15 +3,15 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['react', 'reactDom'],
+define(['react', 'reactDom', 'itView'],
 
-	function(React, ReactDOM) {
+	function(React, ReactDOM, itView) {
 
-		var resetView = Backbone.View.extend({
+		var resetView = itView.extend({
 
             el:				$('#main'),
 
-			requireLogin: 		false,
+			requireLogin: 	false,
 
 			reset:			function(event) {
 									console.log('ResetView - reset, called');
@@ -53,6 +53,7 @@ define(['react', 'reactDom'],
 								$('#reset-form').validator()
 									.on('submit', function (event) {
   										if (!event.isDefaultPrevented()) {
+											event.preventDefault();
 											_this.reset(event);
   											}
 										})
