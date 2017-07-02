@@ -6,11 +6,12 @@
 define(['jsx!views/login/LoginView', 'jsx!views/login/ResetView',
 	'jsx!views/index/IndexView', 'jsx!views/action1/Action1View',
 	'jsx!views/action2/Action2View', 'jsx!views/action3/Action3View',
-	'jsx!views/profile/ProfileView', 'jsx!views/admin/AdminView', 'models/User'],
+	'jsx!views/profile/ProfileView', 'jsx!views/admin/AdminView', 'models/User',
+	'models/UserCollection'],
 
 	function(LoginView, ResetView, IndexView,
 			Action1View, Action2View, Action3View,
-			ProfileView, AdminView, User) {
+			ProfileView, AdminView, User, UserCollection) {
 		var itRouter = Backbone.Router.extend({
 			currentView: 	null,
 
@@ -120,7 +121,9 @@ define(['jsx!views/login/LoginView', 'jsx!views/login/ResetView',
 
 			admin:		function() {
 								console.log('itRouter - admin called.');
-								this.changeView(new AdminView({user: this.user}));
+								var userCollection = new UserCollection();
+								userCollection.reset();
+								this.changeView(new AdminView({user: this.user, collection: userCollection}));
 								}
 			});
 
