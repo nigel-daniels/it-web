@@ -122,7 +122,7 @@ define(['jsx!views/login/LoginView', 'jsx!views/login/ResetView',
 			admin:		function() {
 								console.log('itRouter - admin called.');
 								var userCollection = new UserCollection();
-								userCollection.reset();
+								userCollection.fetch();
 								this.changeView(new AdminView({user: this.user, collection: userCollection}));
 								}
 			});

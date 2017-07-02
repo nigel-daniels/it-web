@@ -3,9 +3,9 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView'],
+define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/admin/UserTable'],
 
-	function(React, ReactDOM, itView, MenuView) {
+	function(React, ReactDOM, itView, MenuView, UserTable) {
 
 		var adminView = itView.extend({
 
@@ -42,77 +42,7 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView'],
 
 							<div className="tab-content">
 		  						<div role="tabpanel" className="tab-pane fade in active" id="users">
-
-									<table className="table table-hover">
-										<thead>
-											<tr>
-												<th>First Name</th>
-												<th>Last Name</th>
-												<th>Username</th>
-												<th>Email</th>
-												<th>Organisation</th>
-												<th>Role</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Mark</td>
-												<td>Otto</td>
-												<td>@mdo</td>
-												<td>mark@example.com</td>
-												<td>Foo</td>
-												<td>Administrator</td>
-												<td>
-													<div className="btn-group btn-group-sm" role="group" aria-label="User controls">
-														<button type="button" className="btn btn-default" data-toggle="modal" data-target="#editUser">
-															<span className="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Edit user"></span>
-														</button>
-														<button type="button" className="btn btn-default" data-toggle="modal" data-target="#deleteUser">
-															<span className="glyphicon glyphicon-trash" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Delete user"></span>
-														</button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>Jacob</td>
-												<td>Thornton</td>
-												<td>@fat</td>
-												<td>jacob@example.com</td>
-												<td>Foo</td>
-												<td>Administrator</td>
-												<td>
-													<div className="btn-group btn-group-sm" role="group" aria-label="User controls">
-														<button type="button" className="btn btn-default" data-toggle="modal" data-target="#editUser">
-															<span className="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Edit user"></span>
-														</button>
-														<button type="button" className="btn btn-default" data-toggle="modal" data-target="#deleteUser">
-															<span className="glyphicon glyphicon-trash" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Delete user"></span>
-														</button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>Larry</td>
-												<td>the Bird</td>
-												<td>@twitter</td>
-												<td>larry@example.com</td>
-												<td>Foo</td>
-												<td>User</td>
-												<td>
-													<div className="btn-group btn-group-sm" role="group" aria-label="User controls">
-														<button type="button" className="btn btn-default" data-toggle="modal" data-target="#editUser">
-															<span className="glyphicon glyphicon-pencil" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Edit user"></span>
-														</button>
-														<button type="button" className="btn btn-default" data-toggle="modal" data-target="#deleteUser">
-															<span className="glyphicon glyphicon-trash" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Delete user"></span>
-														</button>
-													</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-
+									<UserTable users={this.props.users}/>
 		  						</div>
 		  						<div role="tabpanel" className="tab-pane fade" id="settings">
 
