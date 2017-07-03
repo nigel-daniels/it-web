@@ -4,7 +4,10 @@ define(['react', 'reactDom'], function(React, ReactDOM) {
         render() {
             var that = this;
 
+
             var userRows = this.props.users.map(function (user) {
+                var role = user.role == 0 ? 'User' : 'Administrator';
+
                 return(
                     <tr key={user._id}>
                         <td>{user.name.first}</td>
@@ -12,7 +15,7 @@ define(['react', 'reactDom'], function(React, ReactDOM) {
                         <td>{user.username}</td>
                         <td>{user.email}</td>
                         <td>{user.organisation}</td>
-                        <td>{user.role}</td>
+                        <td>{role}</td>
                         <td>
                             <div className="btn-group btn-group-sm" role="group" aria-label="User controls">
                                 <button type="button" className="btn btn-default" data-toggle="modal" data-target="#editUser">
