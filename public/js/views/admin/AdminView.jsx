@@ -11,6 +11,23 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 
             el:				$('#main'),
 
+			events:			{
+							'click .editUser':		'editUser',
+							'click .deleteUser':	'deleteUser'
+							},
+
+			editUser:		function(event) {
+								var id = $(event.currentTarget).parents('td:first').attr('id');
+
+								console.log('AdminView - editUser, id = ' + id);
+								},
+
+			deleteUser:		function(event) {
+								var id = $(event.currentTarget).parents('td:first').attr('id');
+
+								console.log('AdminView - deleteUser, id = ' + id);
+								},
+
 			initialize:		function(options) {
 								//this.model = new AdminModel();
 								this.user = options.user;
@@ -42,7 +59,7 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 
 							<div className="tab-content">
 		  						<div role="tabpanel" className="tab-pane fade in active" id="users">
-									<UserTable users={this.props.users}/>
+									<UserTable user={this.props.user} users={this.props.users}/>
 		  						</div>
 		  						<div role="tabpanel" className="tab-pane fade" id="settings">
 
