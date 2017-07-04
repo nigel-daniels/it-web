@@ -56,7 +56,8 @@ require.config({
                         deps:       ['jquery', 'bootstrap']
                         },
         modal:          {
-                        deps:       ['backbone']
+                        deps:       ['backbone', 'bootstrap'],
+                        exports:    'Backbone.ModalView'
                         },
         itInit:         {
                         deps: 	['bootstrap', 'ie10workaround', 'backbone',

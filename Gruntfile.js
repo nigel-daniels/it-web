@@ -39,8 +39,8 @@ module.exports = function(grunt) {
 								files: 	[{
 										expand: true,
 										cwd: '<%= appPath %>/js/',
-										src: 'app/**/*.jsx',
-										dest: '<%= jsxPath %>/app',
+										src: 'views/**/*.jsx',
+										dest: '<%= jsxPath %>',
 										ext: '.js'
 										}]
 								}
@@ -71,7 +71,7 @@ module.exports = function(grunt) {
   											}
 										},
 								files:	[
-										{expand: true, cwd: '<%= jsxPath %>/views/', src: ['**'], dest: '<%= buildPath %>/<%= appPath %>/js/'},
+										{expand: true, cwd: '<%= jsxPath %>/views/', src: ['**'], dest: '<%= buildPath %>/<%= appPath %>/js/views/'},
 										{expand: true, cwd: '<%= appPath %>/js/', src: ['*.js'], dest: '<%= buildPath %>/<%= appPath %>/js/'},
 										{expand: true, cwd: '<%= appPath %>/js/node_modules/', src: ['**'], dest: '<%= buildPath %>/<%= appPath %>/js/node_modules/'},
 										{expand: true, cwd: '<%= appPath %>/js/views/', src: ['**/*.js'], dest: '<%= buildPath %>/<%= appPath %>/js/views/'},

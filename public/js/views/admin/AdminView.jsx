@@ -18,18 +18,64 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 
 			editUser:		function(event) {
 								var id = $(event.currentTarget).parents('td:first').attr('id');
-
+								var user = this.collection.get(id);
 								console.log('AdminView - editUser, id = ' + id);
+
+								var editModal = Backbone.ModalView.extend({
+									  title: 	'<h4>Edit User</h4>',
+									  body: 	'This user account will be permanently removed.',
+									  backdrop:	'static',
+									  buttons: 	[{
+									    		className: 	'btn-primary ok',
+									    		label: 		'Ok'
+									  			}, {
+									    		className: 	'btn-default cancel',
+									    		label: 		'Cancel',
+									    		close: 		true
+									  			}],
+									  events: 	{
+									    		'click .modal-footer a.ok': 'onOk'
+												},
+									  onOk: 	function(event) {
+									    			event.preventDefault();
+									    			console.log('Ok clicked');
+													}
+									});
+
+  								new editModal().render();
 								},
 
 			deleteUser:		function(event) {
 								var id = $(event.currentTarget).parents('td:first').attr('id');
-
+								var user = this.collection.get(id);
+								//var _this = this;
 								console.log('AdminView - deleteUser, id = ' + id);
+
+								var deleteModal = Backbone.ModalView.extend({
+									  title: 	'<h4>Delete User - ' + user.get('username') + '</h4>',
+									  body: 	'This user account will be permanently removed.',
+									  backdrop:	'static',
+									  buttons: 	[{
+									    		className: 	'btn-primary ok',
+									    		label: 		'Ok'
+									  			}, {
+									    		className: 	'btn-default cancel',
+									    		label: 		'Cancel',
+									    		close: 		true
+									  			}],
+									  events: 	{
+									    		'click .modal-footer a.ok': 'onOk'
+												},
+									  onOk: 	function(event) {
+									    			event.preventDefault();
+									    			console.log('Ok clicked');
+													}
+									});
+
+  								new deleteModal().render();
 								},
 
 			initialize:		function(options) {
-								//this.model = new AdminModel();
 								this.user = options.user;
 								this.listenTo(this.user, 'update sort sync', this.render);
 								this.listenTo(this.collection, 'update sort sync', this.render);
