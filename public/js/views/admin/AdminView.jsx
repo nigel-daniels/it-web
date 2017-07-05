@@ -16,6 +16,12 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 							'click .deleteUser':	'deleteUser'
 							},
 
+			initialize:		function(options) {
+								this.user = options.user;
+								this.listenTo(this.user, 'update sort sync', this.render);
+								this.listenTo(this.collection, 'update sort sync', this.render);
+								},
+
 			editUser:		function(event) {
 								var id = $(event.currentTarget).parents('td:first').attr('id');
 								var user = this.collection.get(id);
@@ -23,11 +29,29 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 
 								var editModal = Backbone.ModalView.extend({
 									  title: 	'<h4>Edit User</h4>',
-									  body: 	'This user account will be permanently removed.',
+									  body: 	'<form class="form-horizontal" id="user-form">' +
+													'<div class="form-group">' +
+														'<label for="first" class="col-sm-2 control-label">Username</label>' +
+														'<div class="col-sm-10">' +
+															'<input type="text" id="username" class="form-control" tabIndex="5" placeholder="Username"  data-error="A username is required." value="' + user.get('username') + '" required autoFocus/>' +
+															'<span class="help-block with-errors"></span>' +
+														'</div>' +
+													'</div>' +
+													'<div class="form-group">' +
+														'<label for="last" class="col-sm-2 control-label">Role</label>' +
+														'<div class="col-sm-10">' +
+															'<select id="role" class="form-control">' +
+																'<option value="0"' + (user.get('role') === 0 ? ' selected' : '') + '>User</option>' +
+																'<option value="1"' + (user.get('role') === 1 ? ' selected' : '') + '>Administrator</option>' +
+															'</select>' +
+														'</div>' +
+													'</div>' +
+												'</form>',
 									  backdrop:	'static',
 									  buttons: 	[{
 									    		className: 	'btn-primary ok',
-									    		label: 		'Ok'
+									    		label: 		'Ok',
+												close:		true
 									  			}, {
 									    		className: 	'btn-default cancel',
 									    		label: 		'Cancel',
@@ -37,8 +61,26 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 									    		'click .modal-footer a.ok': 'onOk'
 												},
 									  onOk: 	function(event) {
-									    			event.preventDefault();
-									    			console.log('Ok clicked');
+									    			console.log('AdminView - editUser, editModal onOk called.');
+													user.save({
+														username:	$('#username').val(),
+														role:		$('#role').val()
+														}, {
+														dataType: 	'text',
+														success: 	function(model, response) {
+																		console.log('AdminView - editUser, editModal onOk success');
+																		},
+														error: 		function(model, response) {
+																		console.log('AdminView - editUser, editUser onOk error');
+																			$.notify({
+																				title: '<strong>Edit User Error</strong>',
+																				icon: 'glyphicon glyphicon-warning-sign',
+																				message: response.responseText
+																				},{
+																					type: 'danger'
+																				});
+																			}
+														});
 													}
 									});
 
@@ -48,7 +90,8 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 			deleteUser:		function(event) {
 								var id = $(event.currentTarget).parents('td:first').attr('id');
 								var user = this.collection.get(id);
-								//var _this = this;
+								var _this = this;
+
 								console.log('AdminView - deleteUser, id = ' + id);
 
 								var deleteModal = Backbone.ModalView.extend({
@@ -57,7 +100,8 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 									  backdrop:	'static',
 									  buttons: 	[{
 									    		className: 	'btn-primary ok',
-									    		label: 		'Ok'
+									    		label: 		'Ok',
+												close:		true
 									  			}, {
 									    		className: 	'btn-default cancel',
 									    		label: 		'Cancel',
@@ -67,18 +111,28 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 									    		'click .modal-footer a.ok': 'onOk'
 												},
 									  onOk: 	function(event) {
-									    			event.preventDefault();
-									    			console.log('Ok clicked');
+													console.log('AdminView - deleteUser, deleteModal onOk called.');
+													user.destroy({
+														dataType: 	'text',
+														success: 	function(model, response) {
+																		console.log('AdminView - deleteUser, deleteModal onOk success');
+																		_this.collection.remove(id);
+																		},
+														error: 		function(model, response) {
+																		console.log('AdminView - deleteUser, deleteModal onOk error');
+																			$.notify({
+																				title: '<strong>Delete User Error</strong>',
+																				icon: 'glyphicon glyphicon-warning-sign',
+																				message: response.responseText
+																				},{
+																					type: 'danger'
+																				});
+																			}
+														});
 													}
 									});
 
   								new deleteModal().render();
-								},
-
-			initialize:		function(options) {
-								this.user = options.user;
-								this.listenTo(this.user, 'update sort sync', this.render);
-								this.listenTo(this.collection, 'update sort sync', this.render);
 								},
 
             render:         function() {
