@@ -25,7 +25,10 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 			editUser:		function(event) {
 								var id = $(event.currentTarget).parents('td:first').attr('id');
 								var user = this.collection.get(id);
+								var _this = this;
+
 								console.log('AdminView - editUser, id = ' + id);
+								console.log('AdminView - editUser, user = ' + JSON.stringify(user.toJSON()));
 
 								var editModal = Backbone.ModalView.extend({
 									  title: 	'<h4>Edit User</h4>',
@@ -41,8 +44,8 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 														'<label for="last" class="col-sm-2 control-label">Role</label>' +
 														'<div class="col-sm-10">' +
 															'<select id="role" class="form-control">' +
-																'<option value="0"' + (user.get('role') === 0 ? ' selected' : '') + '>User</option>' +
-																'<option value="1"' + (user.get('role') === 1 ? ' selected' : '') + '>Administrator</option>' +
+																'<option value="0"' + (user.get('role') == 0 ? ' selected' : '') + '>User</option>' +
+																'<option value="1"' + (user.get('role') == 1 ? ' selected' : '') + '>Administrator</option>' +
 															'</select>' +
 														'</div>' +
 													'</div>' +
@@ -69,6 +72,7 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 														dataType: 	'text',
 														success: 	function(model, response) {
 																		console.log('AdminView - editUser, editModal onOk success');
+																		//_this.collection.fetch();
 																		},
 														error: 		function(model, response) {
 																		console.log('AdminView - editUser, editUser onOk error');

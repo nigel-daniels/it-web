@@ -64,7 +64,7 @@ module.exports = function(User, parallel) {
 
 	function putUser(req, res) {
         console.log('userHandler - putUser, called.');
-        console.log('userHandler - putUser, name: ' + req.body.name.first + ' ' + req.body.name.last + ', username: ' + req.body.username + ', email: ' +req.body.email);
+        console.log('userHandler - putUser, name: ' + req.body.name.first + ' ' + req.body.name.last + ', username: ' + req.body.username + ', email: ' + req.body.email + ', role: ' + req.body.role);
 		User.User.findById(req.params.id, function(err, user) {
             if (err) {
                 console.log('userHandler - putUser, error finding user: ' + err.message);
@@ -163,7 +163,7 @@ module.exports = function(User, parallel) {
                         }
                     });
 
-                console.log('userHandler - putUser, User is name: ' + user.name.first + ' ' + user.name.last + ', username: ' + user.username + ', email: ' + user.email);
+                console.log('userHandler - putUser, User is name: ' + user.name.first + ' ' + user.name.last + ', username: ' + user.username + ', email: ' + user.email + ', role: ' + user.role);
 				// Ok Validation passed let's update the user
                 console.log('userHandler - putUser, updating user values.');
 				user.name.first = req.body.name.first;

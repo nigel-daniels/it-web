@@ -32,14 +32,8 @@ module.exports = function(mongoose, bcrypt) {
 	var User = mongoose.model('User', UserSchema);
 
 	var validateRole =	function(value) {
-							switch (value) {
-								case Role.USER:
-									return true;
-								case Role.ADMIN:
-									return true;
-								default:
-									return false;
-								}
+							console.log('User - validateRole, called.');
+							return (value == Role.USER || value == Role.ADMIN);
 							};
 
 	var generateHash = 	function(password) {
