@@ -20,7 +20,7 @@ module.exports = function(grunt) {
 
 		pkg: 		grunt.file.readJSON('package.json'),
 
-		appPath:	'public',
+		appPath:	'client',
 
 		jsxPath:	'jsx',
 
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
 					},
 
 		babel:		{
-					buildApp: 	{
+					buildClient: 	{
 								files: 	[{
 										expand: true,
 										cwd: '<%= appPath %>/js/',
@@ -47,7 +47,7 @@ module.exports = function(grunt) {
 					},
 
 		copy:		{
-					buildServ:	{
+					buildServer:	{
 								files:	[
 										{expand: true, cwd: './', src: ['package.json'], dest: '<%= distPath %>/'},
 										{expand: true, cwd: './', src: ['itServer.js'], dest: '<%= distPath %>/'},
@@ -60,10 +60,10 @@ module.exports = function(grunt) {
 										{expand: true, cwd: './', src: ['views/**/*.jsx'], dest: '<%= distPath %>/'}
 										]
 								},
-					buildApp:	{
+					buildClient:	{
 								options:{
 										process: function (content, srcpath) {
-											if (!srcpath.startsWith('public/js/node_modules') && srcpath.endsWith('.js')) {
+											if (!srcpath.startsWith('client/js/node_modules') && srcpath.endsWith('.js')) {
     											return content.replace(/jsx!/g, '');
 											} else {
 												return content;
@@ -80,23 +80,23 @@ module.exports = function(grunt) {
 								      	]
 								},
 					copyFonts:	{
-								files: [{expand: true, cwd: '<%= appPath %>/js/node_modules/font-awesome/fonts/', src: ['*.*'], dest: '<%= distPath %>/public/js/node_modules/font-awesome/fonts/'}]
+								files: [{expand: true, cwd: '<%= appPath %>/js/node_modules/font-awesome/fonts/', src: ['*.*'], dest: '<%= distPath %>/client/js/node_modules/font-awesome/fonts/'}]
 								}
 					},
 
 		imagemin:	{
-					buildApp: 	{
+					buildClient: 	{
 								files: [{expand: true, cwd: '<%= appPath %>/media/', src: ['**/*.png'], dest: '<%= buildPath %>/<%= appPath %>/media/' }]
 								}
 					},
 
 		requirejs:	{
-					buildApp:	{
+					buildClient:	{
 								options: 	{
 											appDir:		'<%= buildPath %>/<%= appPath %>',
 											baseUrl:	'js',
 											dir:		'<%= distPath %>/<%= appPath %>/',
-											mainConfigFile: 'public/js/itApp.js',
+											mainConfigFile: 'client/js/itApp.js',
 											modules:	[{
 														name: 		'itApp',
 														include:	['require']
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
 					},
 
 		auto_install: 	{
-			    		buildServ: {
+			    		buildServer: {
 			      					options: 	{
 			        							cwd: '<%= distPath %>',
 												stdout: false,
@@ -126,8 +126,8 @@ module.exports = function(grunt) {
 
 
 	// Default task(s).
-	grunt.registerTask('buildApp', ['babel:buildApp', 'copy:buildApp', 'imagemin:buildApp', 'requirejs:buildApp', 'copy:copyFonts']);
-	grunt.registerTask('buildServ', ['copy:buildServ', 'auto_install:buildServ']);
+	grunt.registerTask('buildClient', ['babel:buildClient', 'copy:buildClient', 'imagemin:buildClient', 'requirejs:buildClient', 'copy:copyFonts']);
+	grunt.registerTask('buildServer', ['copy:buildServer', 'auto_install:buildServer']);
 
-	grunt.registerTask('default', ['clean:all', 'buildServ', 'buildApp', 'clean:build']);
+	grunt.registerTask('default', ['clean:all', 'buildServer', 'buildClient', 'clean:build']);
 	};

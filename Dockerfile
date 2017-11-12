@@ -8,11 +8,11 @@ COPY package.json .
 
 RUN npm install
 
-RUN mkdir -p public/js
+RUN mkdir -p client/js
 
-WORKDIR /usr/local/it-web/public/js
+WORKDIR /usr/local/it-web/client/js
 
-COPY public/js/package.json /usr/local/it-web/public/js
+COPY client/js/package.json /usr/local/it-web/client/js
 
 RUN npm install
 

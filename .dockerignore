@@ -7,7 +7,7 @@ jsx
 log
 README.md
 node_modules
-public/js/node_modules
+client/js/node_modules
 .dockerignore
 docker
 Dockerfile

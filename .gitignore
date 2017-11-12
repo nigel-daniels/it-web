@@ -33,7 +33,7 @@ build/Release
 # Dependency directories
 node_modules
 jspm_packages
-public/js/node_modules
+client/js/node_modules
 docker/mongo/data
 
 # Optional npm cache directory
