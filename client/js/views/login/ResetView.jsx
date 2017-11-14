@@ -3,9 +3,9 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['react', 'reactDom', 'itView'],
+define(['log', 'react', 'reactDom', 'itView'],
 
-	function(React, ReactDOM, itView) {
+	function(log, React, ReactDOM, itView) {
 
 		var resetView = itView.extend({
 
@@ -14,8 +14,8 @@ define(['react', 'reactDom', 'itView'],
 			requireLogin: 	false,
 
 			reset:			function(event) {
-									console.log('ResetView - reset, called');
-									console.log('ResetView - reset, id: ' + this.id);
+									log.debug('ResetView - reset, called');
+									log.debug('ResetView - reset, id: ' + this.id);
 
 									$.post('/reset', {
 										id:	this.id,
@@ -30,7 +30,7 @@ define(['react', 'reactDom', 'itView'],
 											$('#reset-login').removeClass('disabled');
 										})
 										.fail(function(err) {
-											console.log('LoginView - forgot, error: ' + err.message);
+											log.debug('LoginView - forgot, error: ' + err.message);
 											$.notify({
 												title: '<strong>Forgot Password Error</strong>',
 												icon: 'glyphicon glyphicon-warning-sign',

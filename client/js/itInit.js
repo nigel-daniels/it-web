@@ -3,11 +3,11 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['itRouter'], function(itRouter) {
+define(['itRouter','log'], function(itRouter, log) {
 
 	var initialize = function() {
-
-		console.log('itInit - initialize, called.');
+		log.debug('itInit - initialize, called.');
+		
 		$.notifyDefaults({
 			type: 'minimalist'
 			});

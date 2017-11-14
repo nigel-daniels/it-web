@@ -3,9 +3,9 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView'],
+define(['log', 'react', 'reactDom', 'itView', 'jsx!views/base/MenuView'],
 
-	function(React, ReactDOM, itView, MenuView) {
+	function(log, React, ReactDOM, itView, MenuView) {
 
 		var IndexView = itView.extend({
 
@@ -17,7 +17,7 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView'],
 								},
 
             render:         function() {
-								console.log('IndexView - render, user: ' + JSON.stringify(this.user));
+								log.debug('IndexView - render, user: ' + JSON.stringify(this.user));
                                 ReactDOM.render(<Index user={this.user.toJSON()}/>, this.el);
                                 }
 			});

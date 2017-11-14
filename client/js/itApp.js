@@ -20,6 +20,7 @@ require.config({
         notify:             'node_modules/bootstrap-notify/bootstrap-notify',
         validator:          'node_modules/bootstrap-validator/dist/validator',
         modal:              'node_modules/backbone-bootstrap-widgets/src/backbone-modal',
+        log:                'node_modules/loglevel/dist/loglevel.min',
 
         itView:             'itView'
         },
@@ -62,7 +63,7 @@ require.config({
         itInit:         {
                         deps: 	['bootstrap', 'ie10workaround', 'backbone',
                                 'react', 'reactDom', 'jsx', 'notify',
-                                'validator', 'modal']
+                                'validator', 'modal', 'log']
                         }
         },
 
@@ -75,7 +76,27 @@ require.config({
 
     });
 
-require(['./itInit'], function(itInit) {
-    console.log('itApp function, calling itInit.initialize.');
+require(['log', './itInit'], function(log, itInit) {
+    console.log('itApp - Started.');
+    var env = $('#main-script').attr('data-env');
+
+    // Set the logging
+    switch (env) {
+        case 'development':
+            //log = new Log('trace');
+            log.setLevel('trace');
+            break;
+        case 'production':
+            //log = new Log('error');
+            log.setLevel('error');
+            break;
+        default:
+            //log = new Log('info');
+            log.setLevel('info');
+            break;
+        }
+
+    log.debug('itApp, set log env: ' + env);
+
     itInit.initialize();
     });

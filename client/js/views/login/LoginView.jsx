@@ -3,9 +3,9 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['react', 'reactDom', 'itView'],
+define(['log', 'react', 'reactDom', 'itView'],
 
-	function(React, ReactDOM, itView) {
+	function(log, React, ReactDOM, itView) {
 
 		var loginView = itView.extend({
 
@@ -14,8 +14,8 @@ define(['react', 'reactDom', 'itView'],
 			requireLogin: 	false,
 
 			signup:			function(event) {
-								console.log('LoginView - signup, called');
-								console.log('username: ' + $('#username').val());
+								log.debug('LoginView - signup, called');
+								log.debug('username: ' + $('#username').val());
 								$.post('/signup', {
 									first: $('#first').val(),
 									last: $('#last').val(),
@@ -31,7 +31,7 @@ define(['react', 'reactDom', 'itView'],
 										$('#login-name').focus();
 									})
 									.fail(function(err) {
-										console.log('LoginView - signup fail: ' + err.responseText);
+										log.debug('LoginView - signup fail: ' + err.responseText);
 										$.notify({
 											title: '<strong>Signup Error</strong>',
 											icon: 'glyphicon glyphicon-warning-sign',
@@ -43,25 +43,25 @@ define(['react', 'reactDom', 'itView'],
 								},
 
 			login:			function(event) {
-								console.log('LoginView - login, called');
+								log.debug('LoginView - login, called');
 								$.post('/login', {
 									username: $('#login-name').val(),
 									password: $('#login-password').val()
 									})
 									.done(function() {
-										console.log('LoginView - login, login ok! switch to index view.');
+										log.debug('LoginView - login, login ok! switch to index view.');
 										window.location.hash = 'index';
 									})
 									.fail(function(err) {
 										if (err.status === 401) {
-											console.log('LoginView - login, bad username or password provided.');
+											log.debug('LoginView - login, bad username or password provided.');
 											$.notify({
 												title: '<strong>Bad Credentials</strong>',
 												icon: 'fa fa-lock',
 												message: 'The user name or password was incorrect.'
 												});
 										} else {
-											console.log('LoginView - login, error: ' + JSON.stringify(err));
+											log.debug('LoginView - login, error: ' + JSON.stringify(err));
 											$.notify({
 												title: '<strong>Login Error</strong>',
 												icon: 'glyphicon glyphicon-warning-sign',
@@ -74,7 +74,7 @@ define(['react', 'reactDom', 'itView'],
 								},
 
 			forgot:			function(event) {
-									console.log('LoginView - forgot, called');
+									log.debug('LoginView - forgot, called');
 									$.post('/forgot', {
 										username: $('#forgot-name').val()
 										})
@@ -91,7 +91,7 @@ define(['react', 'reactDom', 'itView'],
 											$('#login-name').focus();
 										})
 										.fail(function(err) {
-											console.log('LoginView - forgot, error: ' + JSON.stringify(err));
+											log.debug('LoginView - forgot, error: ' + JSON.stringify(err));
 											$.notify({
 												title: '<strong>Forgot Password Error</strong>',
 												icon: 'glyphicon glyphicon-warning-sign',

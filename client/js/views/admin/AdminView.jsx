@@ -3,9 +3,9 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/admin/UserTable'],
+define(['log', 'react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/admin/UserTable'],
 
-	function(React, ReactDOM, itView, MenuView, UserTable) {
+	function(log, React, ReactDOM, itView, MenuView, UserTable) {
 
 		var adminView = itView.extend({
 
@@ -27,8 +27,8 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 								var user = this.collection.get(id);
 								var _this = this;
 
-								console.log('AdminView - editUser, id = ' + id);
-								console.log('AdminView - editUser, user = ' + JSON.stringify(user.toJSON()));
+								log.debug('AdminView - editUser, id = ' + id);
+								log.debug('AdminView - editUser, user = ' + JSON.stringify(user.toJSON()));
 
 								var editModal = Backbone.ModalView.extend({
 									  title: 	'<h4>Edit User</h4>',
@@ -64,18 +64,18 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 									    		'click .modal-footer a.ok': 'onOk'
 												},
 									  onOk: 	function(event) {
-									    			console.log('AdminView - editUser, editModal onOk called.');
+									    			log.debug('AdminView - editUser, editModal onOk called.');
 													user.save({
 														username:	$('#username').val(),
 														role:		$('#role').val()
 														}, {
 														dataType: 	'text',
 														success: 	function(model, response) {
-																		console.log('AdminView - editUser, editModal onOk success');
+																		log.debug('AdminView - editUser, editModal onOk success');
 																		//_this.collection.fetch();
 																		},
 														error: 		function(model, response) {
-																		console.log('AdminView - editUser, editUser onOk error');
+																		log.debug('AdminView - editUser, editUser onOk error');
 																			$.notify({
 																				title: '<strong>Edit User Error</strong>',
 																				icon: 'glyphicon glyphicon-warning-sign',
@@ -96,7 +96,7 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 								var user = this.collection.get(id);
 								var _this = this;
 
-								console.log('AdminView - deleteUser, id = ' + id);
+								log.debug('AdminView - deleteUser, id = ' + id);
 
 								var deleteModal = Backbone.ModalView.extend({
 									  title: 	'<h4>Delete User - ' + user.get('username') + '</h4>',
@@ -115,23 +115,23 @@ define(['react', 'reactDom', 'itView', 'jsx!views/base/MenuView', 'jsx!views/adm
 									    		'click .modal-footer a.ok': 'onOk'
 												},
 									  onOk: 	function(event) {
-													console.log('AdminView - deleteUser, deleteModal onOk called.');
+													log.debug('AdminView - deleteUser, deleteModal onOk called.');
 													user.destroy({
 														dataType: 	'text',
 														success: 	function(model, response) {
-																		console.log('AdminView - deleteUser, deleteModal onOk success');
+																		log.debug('AdminView - deleteUser, deleteModal onOk success');
 																		_this.collection.remove(id);
 																		},
 														error: 		function(model, response) {
-																		console.log('AdminView - deleteUser, deleteModal onOk error');
-																			$.notify({
-																				title: '<strong>Delete User Error</strong>',
-																				icon: 'glyphicon glyphicon-warning-sign',
-																				message: response.responseText
-																				},{
-																					type: 'danger'
-																				});
-																			}
+																		log.debug('AdminView - deleteUser, deleteModal onOk error');
+																		$.notify({
+																			title: '<strong>Delete User Error</strong>',
+																			icon: 'glyphicon glyphicon-warning-sign',
+																			message: response.responseText
+																			},{
+																				type: 'danger'
+																			});
+																		}
 														});
 													}
 									});

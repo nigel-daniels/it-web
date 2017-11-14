@@ -32,6 +32,8 @@
     "ie10-viewport-bug-workaround.js": "^1.0.0",
     "jquery": "^3.2.1",
     "lodash": "^4.17.4",
+    "log": "^1.4.0",
+    "loglevel": "^1.5.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "requirejs": "^2.3.3",
