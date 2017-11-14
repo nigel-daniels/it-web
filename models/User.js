@@ -3,7 +3,7 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-module.exports = function(mongoose, bcrypt) {
+module.exports = function(log, mongoose, bcrypt) {
 	var SALT_ROUNDS = 10;
 
 	var Role = 	{
@@ -25,6 +25,7 @@ module.exports = function(mongoose, bcrypt) {
 			});
 
 	UserSchema.methods.validatePassword = function(password, callback) {
+		log.debug('UserSchema - validatePassword, called.');
 		return bcrypt.compareSync(password, this.password);
 		};
 
@@ -32,16 +33,17 @@ module.exports = function(mongoose, bcrypt) {
 	var User = mongoose.model('User', UserSchema);
 
 	var validateRole =	function(value) {
-							console.log('User - validateRole, called.');
+							log.debug('User - validateRole, called.');
 							return (value == Role.USER || value == Role.ADMIN);
 							};
 
 	var generateHash = 	function(password) {
+							log.debug('User - generateHash, called.');
 							return bcrypt.hashSync(password, bcrypt.genSaltSync(SALT_ROUNDS), null);
 							};
 
 	var updatePassword = function(id, newPassword, callback) {
-							console.log('User - updatePassword, called');
+							log.debug('User - updatePassword, called');
 							User.update({_id: id}, {password: this.generateHash(newPassword)}, callback);
 							};
 

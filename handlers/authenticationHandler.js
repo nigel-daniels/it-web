@@ -3,12 +3,12 @@
  * Author: Nigel Daniels
  * MIT Licensed
  */
-module.exports = function(User, nodemailer, mailConfig) {
+module.exports = function(log, User, nodemailer, mailConfig) {
 
     function signup(req, res) {
-        console.log('authenticationHandler - signup, called.');
+        log.debug('authenticationHandler - signup, called.');
         // Check we do have a user name and password
-        console.log('req body: ' + JSON.stringify(req.body));
+        log.debug('req body: ' + JSON.stringify(req.body));
         if (!req.body.username) {
             res.status(400).send('The user name is required.');
             return;
@@ -20,7 +20,7 @@ module.exports = function(User, nodemailer, mailConfig) {
             }
 
         // Check the user does not already exist
-        console.log('authenticationHandler - signup, checking for user ' +  req.body.username + ' existance.');
+        log.debug('authenticationHandler - signup, checking for user ' +  req.body.username + ' existance.');
         User.User.findOne({username: req.body.username}, function(err, user) {
             if (err) {
                 res.status(500).send('Error finding user, message: ' + err.message);
@@ -28,11 +28,11 @@ module.exports = function(User, nodemailer, mailConfig) {
                 }
 
             if (user) {
-                console.log('authenticationHandler - signup, user name already exists.');
+                log.error('authenticationHandler - signup, user name already exists.');
                 res.status(400).send('The user name ' + req.body.username + ' is in use.');
                 return;
             } else {
-                console.log('authenticationHandler - signup, user name is free.');
+                log.debug('authenticationHandler - signup, user name is free.');
                 // Ok now let's validate the required fields are here
                 if ((!req.body.first) || (!req.body.last)) {
                     res.status(400).send('A first and last name are required.');
@@ -62,7 +62,7 @@ module.exports = function(User, nodemailer, mailConfig) {
 
                             var role = count === 0 ? User.Role.ADMIN : User.Role.USER;
 
-                            console.log('authenticationHandler - signup, user data is valid, creating user.');
+                            log.debug('authenticationHandler - signup, user data is valid, creating user.');
                             // Ok Validation passed let's create the user
                             var user = new User.User({
                                             name: 			{
@@ -77,13 +77,13 @@ module.exports = function(User, nodemailer, mailConfig) {
                                             });
 
                             // Ok let's persist the user
-                            console.log('authenticationHandler - signup, saving user.');
+                            log.debug('authenticationHandler - signup, saving user.');
                             user.save(function(err) {
                                 if (err) {
                                     res.status(500).send('Error saving user, message: ' + err.message);
                                     return;
                                 } else {
-                                    console.log('authenticationHandler - signup, user saved.');
+                                    log.debug('authenticationHandler - signup, user saved.');
                                     res.sendStatus(200);
                                     }
                                 });
@@ -95,39 +95,39 @@ module.exports = function(User, nodemailer, mailConfig) {
         }
 
     function login(req, res) {
-        console.log('authenticationHandler - login, called.');
+        log.debug('authenticationHandler - login, called.');
         res.sendStatus(200);
         }
 
     function authenticate(req, res) {
-        console.log('authenticationHandler - authenticate, called.');
+        log.debug('authenticationHandler - authenticate, called.');
         if (req.isAuthenticated()) {
-            console.log('authenticationHandler - authenticate, ok.');
+            log.debug('authenticationHandler - authenticate, ok.');
 
             res.sendStatus(200);
         } else {
-            console.log('authenticationHandler - authenticate, not ok.');
+            log.debug('authenticationHandler - authenticate, not ok.');
             res.sendStatus(401);
             }
         }
 
     function forgotPassword(req, res) {
-        console.log('authenticationHandler - forgotPassword, called.');
+        log.debug('authenticationHandler - forgotPassword, called.');
         var resetPasswordUrl = 'https://' + req.headers.host + '/reset';
 
-        console.log('authenticationHandler - forgotPassword, finding user.');
+        log.debug('authenticationHandler - forgotPassword, finding user.');
         User.User.findOne({username: req.body.username}, function(err, user) {
             if (err) {
-                console.log('authenticationHandler - forgotPassword, finding user err: ' + err.message);
+                log.error('authenticationHandler - forgotPassword, finding user err: ' + err.message);
                 res.status(500).send({message: 'Error finding user, message: ' + err.message});
                 return;
                 }
 
             if (user) {
-                console.log('authenticationHandler - forgotPassword, found user.');
+                log.debug('authenticationHandler - forgotPassword, found user.');
                 resetPasswordUrl += '/?id=' + user._id;
 
-                console.log('authenticationHandler - forgotPassword, creating smtpTransport.');
+                log.debug('authenticationHandler - forgotPassword, creating smtpTransport.');
                 var smtpTransport = nodemailer.createTransport(mailConfig);
 
                 var mailOpts =  {
@@ -137,19 +137,19 @@ module.exports = function(User, nodemailer, mailConfig) {
                                 text:		'Please use this link to reset your password: ' + resetPasswordUrl
                                 };
 
-                console.log('authenticationHandler - forgotPassword, sending email.');
+                log.debug('authenticationHandler - forgotPassword, sending email.');
                 smtpTransport.sendMail(mailOpts, function(err, info) {
                     if (err) {
                         res.status(500).send({message: 'Error sending e-mail: ' + err.message}); // NLS
                         return;
                         }
 
-                    console.log('authenticationHandler - forgotPassword, email sent ok.');
+                    log.debug('authenticationHandler - forgotPassword, email sent ok.');
                     res.sendStatus(200);
                     return;
                     });
             } else {
-                console.log('authenticationHandler - forgotPassword, user ' + req.body.username + ' not found');
+                log.error('authenticationHandler - forgotPassword, user ' + req.body.username + ' not found');
                 res.status(404).send({message: 'That user could not be found.'});
                 return;
                 }
@@ -157,13 +157,13 @@ module.exports = function(User, nodemailer, mailConfig) {
         }
 
     function getResetPage(req, res) {
-        console.log('authenticationHandler - getResetPage, called');
-		console.log('authenticationHandler - getResetPage, id: ' + req.query.id);
+        log.debug('authenticationHandler - getResetPage, called');
+		log.debug('authenticationHandler - getResetPage, id: ' + req.query.id);
         res.redirect('/#reset/' + req.query.id);
         }
 
     function resetPassword(req, res) {
-        console.log('authenticationHandler - resetPassword, called.');
+        log.debug('authenticationHandler - resetPassword, called.');
         User.User.findById(req.body.id, function(err, user) {
             if (err) {
                 res.status(500).send('Error finding user, message: ' + err.message);
@@ -193,20 +193,20 @@ module.exports = function(User, nodemailer, mailConfig) {
         }
 
     function logout(req, res) {
-        console.log('authenticationHandler - logout, called.');
+        log.debug('authenticationHandler - logout, called.');
 		req.session.destroy();
 		req.logout();
 		res.redirect('/#login');
         }
 
     function isAuthenticated(req, res, next) {
-        console.log('authenticationHandler - isAuthenticated, called.');
+        log.debug('authenticationHandler - isAuthenticated, called.');
         if (req.isAuthenticated()) {
-            console.log('authenticationHandler - isAuthenticated, ok.');
+            log.debug('authenticationHandler - isAuthenticated, ok.');
             return next();
             }
 
-        console.log('authenticationHandler - isAuthenticated, not ok.');
+        log.debug('authenticationHandler - isAuthenticated, not ok.');
         res.redirect('/');
         }
 

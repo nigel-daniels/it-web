@@ -23,7 +23,7 @@ class IndexLayout extends React.Component{
                         {this.props.children}
                     </div>
 
-                    <script type="text/javascript" src="/js/node_modules/requirejs/require.js" data-main="js/itApp"></script>
+                    <script id="main-script" type="text/javascript" src="/js/node_modules/requirejs/require.js" data-main="js/itApp" data-env={this.props.env}></script>
 
                 </body>
             </html>

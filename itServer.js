@@ -18,6 +18,7 @@ var favicon 		= require('serve-favicon');
 
 // Persistence dependanices
 var logger			= require('morgan');
+var log				= require('loglevel');
 var mongoose 		= require('mongoose');
 
 // login dependanices
@@ -29,7 +30,7 @@ var bcrypt			= require('bcrypt-nodejs');
 var nodemailer		= require('nodemailer');
 
 // utility dependancies
-var parallel			= require('async/parallel');
+var parallel		= require('async/parallel');
 
 // Load configuration files
 var config = {
@@ -56,6 +57,19 @@ app.use(function (req, res, next) {
 	res.setHeader('Connection', 'close');
 	res.status(503).send('Service is in the process of starting.');
 	});
+
+// Set the logging
+switch (env) {
+	case 'development':
+		log.setLevel('trace');
+		break;
+	case 'production':
+		log.setLevel('error');
+		break;
+	default:
+		log.setLevel('info');
+		break;
+	}
 
 // Set the environment specific variables
 if(env === 'production') {
@@ -98,19 +112,19 @@ app.use(bodyParser.json({			// Stop over stuffing of JSON
 
 //Load the app specific data models
 var models = {
-	User: 			require(__dirname + '/models/User')(mongoose, bcrypt),
+	User: 			require(__dirname + '/models/User')(log, mongoose, bcrypt),
 	};
 
 
 // Load the app specific business logic
 var handlers = {
-	userHandler:			require(__dirname + '/handlers/userHandler')(models.User, parallel),
-	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')(models.User, nodemailer, config.mail)
+	userHandler:			require(__dirname + '/handlers/userHandler')(log, models.User, parallel),
+	authenticationHandler:	require(__dirname + '/handlers/authenticationHandler')(log, models.User, nodemailer, config.mail)
 	};
 
 
 // Now load the passport config (it needs the user data model
-config.passport = require(__dirname + '/config/passport')(passport, passportLocal, models.User);
+config.passport = require(__dirname + '/config/passport')(log, passport, passportLocal, models.User);
 
 // configure the stuff for passport auth
 app.use(session(config.session));
@@ -126,34 +140,34 @@ app.use(express.static(__dirname + '/client'));
 // Log all of the requests
 if (env === 'development') {
 	app.get('*', function(req, res, next) {
-		console.log('itServer - get, req.url ' + req.url);
+		log.debug('itServer - get, req.url ' + req.url);
 		return next();
 		});
 	app.post('*', function(req, res, next) {
-		console.log('itServer - post, req.url ' + req.url);
+		log.debug('itServer - post, req.url ' + req.url);
 		return next();
 		});
 	app.put('*', function(req, res, next) {
-		console.log('itServer - put, req.url ' + req.url);
+		log.debug('itServer - put, req.url ' + req.url);
 		return next();
 		});
 	app.delete('*', function(req, res, next) {
-		console.log('itServer - del, req.url ' + req.url);
+		log.debug('itServer - del, req.url ' + req.url);
 		return next();
 		});
 	}
 
 // Now define the starting API
 app.get('/', function(req, res) {
-	console.log('itServer - / called, serving index.');
-	res.render('index.jsx'); // removed {layout: false} parameter
+	log.debug('itServer - / called, serving index.');
+	res.render('index.jsx', {env: env}); // removed {layout: false} parameter
 	});
 
 // Load the routes we are going to use
 require(__dirname + '/routes/authentication')(app, handlers, passport);
 require(__dirname + '/routes/users')(app, handlers);
 
-// Capture requests to shotdown and do it cleanly
+// Capture requests to shutdown and do it cleanly
 process.on('SIGINT', cleanup);
 process.on('SIGTERM', cleanup);
 
@@ -174,7 +188,7 @@ var certificate = fs.readFileSync(__dirname + '/config/it-test-crt.crt');
 // Finally start the server
 https.createServer({key: privateKey, cert: certificate}, app).listen(port, function(){
 	startup = false;
-	console.log('IT Demo App, listening on port ' + port + ', environment is ' + env);
+	log.info('IT Demo App, listening on port ' + port + ', environment is ' + env);
 	});
 
 
@@ -183,13 +197,13 @@ function cleanup () {
 	shutdown = true;
 
 	server.close( function () {
-	    console.log('itServer - cleanup : shutting down.');
+	    log.info('itServer - cleanup : shutting down.');
 		mongoose.disconnect();
 		process.exit();
 		});
 
 	setTimeout(function () {
-		console.error("itServer - cleanup : timed out, forcing shut down.");
+		log.error("itServer - cleanup : timed out, forcing shut down.");
 		process.exit(1);
 		}, config.app.shutdownTimout * 1000);
 	}
